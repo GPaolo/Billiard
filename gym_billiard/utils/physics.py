@@ -1,6 +1,7 @@
 import Box2D as b2
 import pygame
 import numpy as np
+from gym_billiard.utils import parameters
 
 
 # TODO implement different intial arm positions
@@ -25,40 +26,11 @@ def my_draw_circle(circle, body, screen, params, color):
 
 b2.b2.circleShape.draw = my_draw_circle
 
-# Params class
-class Params(object):
-  # Define simulation parameters (Might move them to a param file)
-  # The world is centered at the lower left corner of the table
-  TABLE_SIZE = np.array([3., 3.])
-  TABLE_CENTER = np.array(TABLE_SIZE / 2)
-  DISPLAY_SIZE = (600, 600)
-  TO_PIXEL = np.array(DISPLAY_SIZE) / TABLE_SIZE
-
-  LINK_0_LENGTH = 1.
-  LINK_1_LENGTH = 1.
-  LINK_ELASTICITY = 0.
-  LINK_FRICTION = .9
-  LINK_THICKNESS = 0.05
-
-  BALL_RADIUS = .1
-  BALL_ELASTICITY = .9
-  BALL_FRICTION = .9
-
-  WALL_THICKNESS = .05
-  WALL_ELASTICITY = .95
-  WALL_FRICTION = .9
-
-  # Graphic params
-  PPM = int(min(DISPLAY_SIZE)/max(TABLE_SIZE))
-  TARGET_FPS = 20
-  TIME_STEP = 1.0 / TARGET_FPS
-
-
 class PhysicsSim(object):
 
   def __init__(self, balls_pose=[[0, 0]], arm_position=None, params=None):
     if params is None:
-      self.params = Params()
+      self.params = parameters.Params()
     else:
       self.params = params
 

@@ -28,12 +28,11 @@ class BilliardEnv(gym.Env):
     # Joint 1: [-Pi, Pi]
     arm_joints = spaces.Box(low=np.array([-np.pi/2, -np.pi]), high=np.array([np.pi/2, np.pi]))
 
-    self.observation_space = spaces.Dict({'ball_position': ball_os,
-                                          'arm_joints': arm_joints})
+    self.observation_space = spaces.Tuple([ball_os, arm_joints])
 
     # Actions are torques on joints and open/close of arm grip.
     # Joint torques can be between [-1, 1]
-    self.action_space = spaces.Dict({'joint_torques': spaces.Box(low=np.array([-1., -1.]), high=np.array([1., 1.]))})
+    self.action_space = spaces.Box(low=np.array([-1., -1.]), high=np.array([1., 1.]))
 
     self.seed(seed)
 
@@ -50,7 +49,7 @@ class BilliardEnv(gym.Env):
 
     init_joint_pose = np.zeros(2)
     self.physics_eng.reset([init_ball_pose], init_joint_pose)
-
+    self.steps = 0
     return self._get_obs()
 
   def _get_obs(self):
@@ -60,11 +59,12 @@ class BilliardEnv(gym.Env):
     ball_pose = self.physics_eng.balls[0].position + self.physics_eng.wt_transform
     joint0 = self.physics_eng.arm['jointW0'].angle
     joint1 = self.physics_eng.arm['joint01'].angle
-    self.state = {'ball_position':np.array([ball_pose[0], ball_pose[1]]), 'arm_joints': np.array([joint0, joint1])}
+    self.state = (np.array([ball_pose[0], ball_pose[1]]), np.array([joint0, joint1]))
+    self.steps += 1
     return self.state
 
   def step(self, action):
-    action = np.clip(action['joint_torques'], -1, 1)
+    action = np.clip(action, -1, 1)
 
     # Set motor torques
     self.physics_eng.apply_torque_to_joint('jointW0', action[0])
@@ -78,12 +78,15 @@ class BilliardEnv(gym.Env):
     final = False
     # Check if final state
     # Calculates if distance between the ball's center and the holes' center is smaller than the holes' radius
-    ball_pose = self.state['ball_position']
+    ball_pose = self.state[0]
     for hole in self.physics_eng.holes:
       dist = np.linalg.norm(ball_pose - hole['pose'])
       if dist <= hole['radius']:
         final = True
         reward = 100
+
+    if self.steps >= self.params.MAX_ENV_STEPS:
+      final = True
 
     return self.state, reward, final, {}
 

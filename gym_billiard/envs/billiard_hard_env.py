@@ -20,21 +20,22 @@ class BilliardHardEnv(gym.Env):
     self.physics_eng = physics.PhysicsSim()
 
     # Ball XY positions can be between -1.5 and 1.5
-    ball_os = spaces.Box(low=np.array([-self.params.TABLE_SIZE[0]/2., -self.params.TABLE_SIZE[1]/2.]),
-                         high=np.array([self.params.TABLE_SIZE[0]/2., self.params.TABLE_SIZE[1]/2.]))
+    ball0_os = spaces.Box(low=np.array([-self.params.TABLE_SIZE[0]/2., -self.params.TABLE_SIZE[1]/2.]),
+                          high=np.array([self.params.TABLE_SIZE[0] / 2., self.params.TABLE_SIZE[1] / 2.]))
+
+    ball1_os = spaces.Box(low=np.array([-self.params.TABLE_SIZE[0]/2., -self.params.TABLE_SIZE[1]/2.]),
+                          high=np.array([self.params.TABLE_SIZE[0]/2., self.params.TABLE_SIZE[1]/2.]))
 
     # Arm joint can have positons:
     # Joint 0: [-Pi/2, Pi/2]
     # Joint 1: [-Pi, Pi]
     arm_joints = spaces.Box(low=np.array([-np.pi/2, -np.pi]), high=np.array([np.pi/2, np.pi]))
 
-    self.observation_space = spaces.Dict({'ball0_position': ball_os,
-                                          'ball1_position': ball_os,
-                                          'arm_joints': arm_joints})
+    self.observation_space = spaces.Tuple([ball0_os, ball1_os, arm_joints])
 
     # Actions are torques on joints and open/close of arm grip.
     # Joint torques can be between [-1, 1]
-    self.action_space = spaces.Dict({'joint_torques': spaces.Box(low=np.array([-1., -1.]), high=np.array([1., 1.]))})
+    self.action_space = spaces.Box(low=np.array([-1., -1.]), high=np.array([1., 1.]))
 
     self.seed(seed)
 
@@ -54,7 +55,7 @@ class BilliardHardEnv(gym.Env):
 
     init_joint_pose = np.zeros(2)
     self.physics_eng.reset([init_ball0_pose, init_ball1_pose], init_joint_pose)
-
+    self.steps = 0
     return self._get_obs()
 
   def _get_obs(self):
@@ -65,13 +66,14 @@ class BilliardHardEnv(gym.Env):
     ball1_pose = self.physics_eng.balls[1].position + self.physics_eng.wt_transform
     joint0 = self.physics_eng.arm['jointW0'].angle
     joint1 = self.physics_eng.arm['joint01'].angle
-    self.state = {'ball0_position':np.array([ball0_pose[0], ball0_pose[1]]),
-                  'ball1_position': np.array([ball1_pose[0], ball1_pose[1]]),
-                  'arm_joints': np.array([joint0, joint1])}
+    self.state = (np.array([ball0_pose[0], ball0_pose[1]]),
+                  np.array([ball1_pose[0], ball1_pose[1]]),
+                  np.array([joint0, joint1]))
+    self.steps += 1
     return self.state
 
   def step(self, action):
-    action = np.clip(action['joint_torques'], -1, 1)
+    action = np.clip(action, -1, 1)
 
     # Set motor torques
     self.physics_eng.apply_torque_to_joint('jointW0', action[0])
@@ -85,8 +87,8 @@ class BilliardHardEnv(gym.Env):
     final = False
     # Check if final state
     # Calculates if distance between the ball's center and the holes' center is smaller than the holes' radius
-    ball0_pose = self.state['ball0_position']
-    ball1_pose = self.state['ball1_position']
+    ball0_pose = self.state[0]
+    ball1_pose = self.state[1]
 
     for hole in self.physics_eng.holes:
       dist_ball0 = np.linalg.norm(ball0_pose - hole['pose'])
@@ -100,6 +102,9 @@ class BilliardHardEnv(gym.Env):
       elif dist_ball0 <= hole['radius']:
         final = True
         reward += -50
+
+    if self.steps >= self.params.MAX_ENV_STEPS:
+      final = True
 
     return self.state, reward, final, {}
 
