@@ -49,11 +49,6 @@ class Params(object):
   TARGET_FPS = 20
   TIME_STEP = 1.0 / TARGET_FPS
 
-  colors = {
-    b2.b2.staticBody: (111, 111, 111, 255),
-    b2.b2.dynamicBody: (0, 0, 0, 255),
-  }
-
 
 class PhysicsSim(object):
 
@@ -112,12 +107,12 @@ class PhysicsSim(object):
     '''
     self.balls = []
 
-    for pose in balls_pose:
+    for idx, pose in enumerate(balls_pose):
       pose = pose + self.tw_transform # move balls in world RF
       ball = self.world.CreateDynamicBody(position=pose,
                                           bullet=True,
                                           allowSleep=True,
-                                          userData={'name': 'ball'},
+                                          userData={'name': 'ball{}'.format(idx)},
                                           fixtures=b2.b2FixtureDef(shape=b2.b2CircleShape(radius=self.params.BALL_RADIUS),
                                                                    density=1.0,
                                                                    friction=self.params.BALL_FRICTION,
