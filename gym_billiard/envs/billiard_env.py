@@ -2,7 +2,7 @@ import gym
 from gym import error, spaces, utils
 from gym.utils import seeding
 import numpy as np
-from gym_billiard.utils import physics
+from gym_billiard.utils import physics, parameters
 
 # TODO implement logger
 
@@ -16,7 +16,7 @@ class BilliardEnv(gym.Env):
 
   def __init__(self, seed=None):
     self.screen = None
-    self.params = physics.Params()
+    self.params = parameters.Params()
     self.physics_eng = physics.PhysicsSim()
 
     # Ball XY positions can be between -1.5 and 1.5

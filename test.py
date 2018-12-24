@@ -1,12 +1,12 @@
 import gym
 import gym_billiard
 env = gym.make('Billiard-v0')
+import numpy as np
 
 print('Actions {}'.format(env.action_space))
 print('Obs {}'.format(env.observation_space))
 
 action = env.action_space.sample()
-
 for i in range(10):
   obs = env.reset()
 

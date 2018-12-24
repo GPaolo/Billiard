@@ -130,6 +130,8 @@ class PhysicsSim(object):
                                              lowerAngle=-.5 * b2.b2_pi,
                                              upperAngle=.5 * b2.b2_pi,
                                              enableLimit=True,
+                                             maxMotorTorque=10.0,
+                                             motorSpeed=0.0,
                                              enableMotor=True)
 
     joint01 = self.world.CreateRevoluteJoint(bodyA=link0,

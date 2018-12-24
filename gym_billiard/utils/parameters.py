@@ -1,3 +1,4 @@
+import numpy as np
 # Params class
 class Params(object):
   # Define simulation parameters (Might move them to a param file)
