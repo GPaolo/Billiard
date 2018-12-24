@@ -3,11 +3,11 @@ from gym import error, spaces, utils
 from gym.utils import seeding
 import numpy as np
 from gym_billiard.utils import physics
-import Box2D as b2
-
-
 import logging
 logger = logging.getLogger(__name__)
+
+# TODO implement negative reward for arm touching ball 1
+# TODO implement logger
 
 class BilliardHardEnv(gym.Env):
   metadata = {'render.modes': ['human'],

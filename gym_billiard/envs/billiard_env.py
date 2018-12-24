@@ -3,8 +3,8 @@ from gym import error, spaces, utils
 from gym.utils import seeding
 import numpy as np
 from gym_billiard.utils import physics
-import Box2D as b2
 
+# TODO implement logger
 
 import logging
 logger = logging.getLogger(__name__)

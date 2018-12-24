@@ -2,6 +2,10 @@ import Box2D as b2
 import pygame
 import numpy as np
 
+
+# TODO implement different intial arm positions
+# TODO implement checks on balls spawning positions (not in holes or on arm or overlapped'
+
 # Extend polygon shape with drawing function
 def draw_polygon(polygon, body, screen, params, color):
   vertices = [(body.transform * v) * params.PPM for v in polygon.vertices]
@@ -37,7 +41,7 @@ class Params(object):
   LINK_THICKNESS = 0.05
 
   BALL_RADIUS = .1
-  BALL_ELASTICITY = .5
+  BALL_ELASTICITY = .9
   BALL_FRICTION = .9
 
   WALL_THICKNESS = .05
@@ -119,7 +123,6 @@ class PhysicsSim(object):
                                                                    restitution=self.params.BALL_ELASTICITY))
       self.balls.append(ball)
 
-  #TODO implement different intial arm positions
   def _create_robotarm(self, arm_position=None):
     '''
     Creates the robotic arm.
