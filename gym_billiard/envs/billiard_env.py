@@ -3,6 +3,7 @@ from gym import error, spaces, utils
 from gym.utils import seeding
 import numpy as np
 from gym_billiard.utils import physics
+import Box2D as b2
 
 
 import logging
@@ -108,8 +109,17 @@ class BilliardEnv(gym.Env):
 
     # Draw bodies
     for body in self.physics_eng.world.bodies:
+      color = [0, 0, 0]
+      obj_name = body.userData['name']
+      if obj_name is 'ball':
+        color = [0, 255, 0, 255]
+      elif obj_name in ['link0', 'link1']:
+        color = [100, 100, 100]
+      elif 'wall' in obj_name:
+        color = [150, 150, 150]
+
       for fixture in body.fixtures:
-        fixture.shape.draw(body, fixture, self.screen, self.params)
+        fixture.shape.draw(body, self.screen, self.params, color)
 
     pygame.display.flip()
     self.clock.tick(self.params.TARGET_FPS)

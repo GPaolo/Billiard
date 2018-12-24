@@ -3,19 +3,19 @@ import pygame
 import numpy as np
 
 # Extend polygon shape with drawing function
-def draw_polygon(polygon, body, fixture, screen, params):
+def draw_polygon(polygon, body, screen, params, color):
   vertices = [(body.transform * v) * params.PPM for v in polygon.vertices]
   vertices = [(v[0], params.DISPLAY_SIZE[1] - v[1]) for v in vertices]
-  pygame.draw.polygon(screen, params.colors[body.type], vertices)
+  pygame.draw.polygon(screen, color, vertices)
 
 b2.b2.polygonShape.draw = draw_polygon
 
 # Extend circle shape with drawing function
-def my_draw_circle(circle, body, fixture, screen, params):
+def my_draw_circle(circle, body, screen, params, color):
   position = body.transform * circle.pos * params.PPM
   position = (position[0], params.DISPLAY_SIZE[1] - position[1])
   pygame.draw.circle(screen,
-                     params.colors[body.type],
+                     color,
                      [int(x) for x in position],
                      int(circle.radius * params.PPM))
 
@@ -58,7 +58,6 @@ class Params(object):
 class PhysicsSim(object):
 
   def __init__(self, balls_pose=[[0, 0]], arm_position=None, params=None):
-    self.render = True ## TODO REMOVE
     if params is None:
       self.params = Params()
     else:
@@ -74,13 +73,6 @@ class PhysicsSim(object):
     self._create_robotarm(arm_position)
     self._create_holes()
 
-    ## TODO REMOVE
-    if self.render:
-      self.screen = pygame.display.set_mode((self.params.DISPLAY_SIZE[0], self.params.DISPLAY_SIZE[1]), 0, 32)
-      pygame.display.set_caption('Billiard')
-      self.clock = pygame.time.Clock()
-    ## TODO REMOVE
-
   def _create_table(self):
     '''
     Creates the walls of the table
@@ -88,16 +80,21 @@ class PhysicsSim(object):
     '''
     # Create walls in world RF
     left_wall_body = self.world.CreateStaticBody(position=(0, self.params.TABLE_CENTER[1]),
+                                                 userData={'name': 'left wall'},
                                                  shapes=b2.b2PolygonShape(box=(self.params.WALL_THICKNESS/2,
                                                                                self.params.TABLE_SIZE[1]/2)))
+
     right_wall_body = self.world.CreateStaticBody(position=(self.params.TABLE_SIZE[0], self.params.TABLE_CENTER[1]),
+                                                  userData={'name': 'right wall'},
                                                   shapes=b2.b2PolygonShape(box=(self.params.WALL_THICKNESS/2,
                                                                                 self.params.TABLE_SIZE[1] / 2)))
 
     upper_wall_body = self.world.CreateStaticBody(position=(self.params.TABLE_CENTER[0], self.params.TABLE_SIZE[1]),
+                                                  userData={'name': 'upper wall'},
                                                   shapes=b2.b2PolygonShape(box=(self.params.TABLE_SIZE[0] / 2,
                                                                                 self.params.WALL_THICKNESS/2)))
     bottom_wall_body = self.world.CreateStaticBody(position=(self.params.TABLE_CENTER[0], 0),
+                                                   userData={'name': 'bottom wall'},
                                                    shapes=b2.b2PolygonShape(box=(self.params.TABLE_SIZE[0] / 2,
                                                                                  self.params.WALL_THICKNESS/2)))
 
@@ -120,6 +117,7 @@ class PhysicsSim(object):
       ball = self.world.CreateDynamicBody(position=pose,
                                           bullet=True,
                                           allowSleep=True,
+                                          userData={'name': 'ball'},
                                           fixtures=b2.b2FixtureDef(shape=b2.b2CircleShape(radius=self.params.BALL_RADIUS),
                                                                    density=1.0,
                                                                    friction=self.params.BALL_FRICTION,
@@ -136,6 +134,7 @@ class PhysicsSim(object):
     link0 = self.world.CreateDynamicBody(position=(self.params.TABLE_CENTER[0], self.params.LINK_0_LENGTH/2),
                                          bullet=True,
                                          allowSleep=True,
+                                         userData={'name': 'link0'},
                                          fixtures=b2.b2FixtureDef(
                                            shape=b2.b2PolygonShape(box=(self.params.LINK_THICKNESS,
                                                                         self.params.LINK_0_LENGTH/2)),
@@ -147,6 +146,7 @@ class PhysicsSim(object):
     link1 = self.world.CreateDynamicBody(position=(self.params.TABLE_CENTER[0], self.params.LINK_0_LENGTH - .1 + self.params.LINK_1_LENGTH / 2),
                                          bullet=True,
                                          allowSleep=True,
+                                         userData={'name': 'link1'},
                                          fixtures=b2.b2FixtureDef(
                                            shape=b2.b2PolygonShape(box=(self.params.LINK_THICKNESS,
                                                                         self.params.LINK_1_LENGTH / 2)),
@@ -182,15 +182,6 @@ class PhysicsSim(object):
     self.holes = [{'pose': np.array([-self.params.TABLE_SIZE[0] / 2, self.params.TABLE_SIZE[1] / 2]), 'radius': .4},
                   {'pose': np.array([self.params.TABLE_SIZE[0] / 2, self.params.TABLE_SIZE[1] / 2]), 'radius': .4}]
 
-  ## TODO REMOVE
-  def _clear_screen(self):
-    """
-    Clears the screen.
-    :return: None
-    """
-    self.screen.fill(pygame.color.THECOLORS["white"])
-  ## TODO REMOVE
-
   def reset(self, balls_pose, arm_position):
     # Destroy all the bodies
     for body in self.world.bodies:
@@ -200,25 +191,6 @@ class PhysicsSim(object):
     # Recreate the balls and the arm
     self._create_balls(balls_pose)
     self._create_robotarm(arm_position)
-
-  ## TODO REMOVE
-  def _draw_world(self):
-    """
-    Draw the world.
-    :return: None
-    """
-    # Draw holes. This are just drawn, but are not simulated.
-    for hole in self.holes:
-      pose = -hole['pose'] + self.tw_transform # To world transform (The - is to take into account pygame coordinate system)
-      pygame.draw.circle(self.screen,
-                         (255, 0, 0),
-                         [int(pose[0] * self.params.PPM), int(pose[1] * self.params.PPM)],
-                         int(hole['radius'] * self.params.PPM))
-
-    for body in self.world.bodies:
-      for fixture in body.fixtures:
-        fixture.shape.draw(body, fixture, self.screen, self.params)
-  ## TODO REMOVE
 
   def apply_torque_to_joint(self, joint, torque):
     self.arm[joint].motorSpeed = self.arm[joint].motorSpeed + torque * self.dt
@@ -230,14 +202,6 @@ class PhysicsSim(object):
     '''
     self.world.Step(self.dt, self.vel_iter, self.pos_iter)
     self.world.ClearForces()
-
-    ## TODO REMOVE
-    if self.render:
-      self._clear_screen()
-      self._draw_world()
-      pygame.display.flip()
-      self.clock.tick(self.params.TARGET_FPS)
-    ## TODO REMOVE
 
 if __name__ == "__main__":
   phys = PhysicsSim(balls_pose=[[0, 0], [1, 1]])
