@@ -178,9 +178,4 @@ class PhysicsSim(object):
 
 if __name__ == "__main__":
   phys = PhysicsSim(balls_pose=[[0, 0], [1, 1]])
-  for i in range(60):
-    phys.apply_torque_to_joint('joint01', 1)
-    phys.step()
-    ball_pose = phys.balls[0].position
-    dist = np.linalg.norm(ball_pose - phys.holes[0]['pose'])
-    print(dist)
+  print(phys.walls[0])
