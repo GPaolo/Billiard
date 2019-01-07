@@ -165,7 +165,8 @@ class PhysicsSim(object):
     self._create_robotarm(arm_position)
 
   def apply_torque_to_joint(self, joint, torque):
-    self.arm[joint].motorSpeed = self.arm[joint].motorSpeed + torque * self.dt
+    speed = self.arm[joint].motorSpeed
+    self.arm[joint].motorSpeed = speed + torque * self.dt
 
   def step(self):
     '''

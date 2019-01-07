@@ -29,9 +29,10 @@ class BilliardHardEnv(gym.Env):
     # Arm joint can have positons:
     # Joint 0: [-Pi/2, Pi/2]
     # Joint 1: [-Pi, Pi]
-    arm_joints = spaces.Box(low=np.array([-np.pi/2, -np.pi]), high=np.array([np.pi/2, np.pi]))
+    joints_angle = spaces.Box(low=np.array([-np.pi / 2, -np.pi]), high=np.array([np.pi / 2, np.pi]))
+    joints_vel = spaces.Box(low=np.array([-50, -50]), high=np.array([50, 50]))
 
-    self.observation_space = spaces.Tuple([ball0_os, ball1_os, arm_joints])
+    self.observation_space = spaces.Tuple([ball0_os, ball1_os, joints_angle, joints_vel])
 
     # Actions are torques on joints and open/close of arm grip.
     # Joint torques can be between [-1, 1]
@@ -64,11 +65,14 @@ class BilliardHardEnv(gym.Env):
     '''
     ball0_pose = self.physics_eng.balls[0].position + self.physics_eng.wt_transform
     ball1_pose = self.physics_eng.balls[1].position + self.physics_eng.wt_transform
-    joint0 = self.physics_eng.arm['jointW0'].angle
-    joint1 = self.physics_eng.arm['joint01'].angle
+    joint0_a = self.physics_eng.arm['jointW0'].angle
+    joint0_v = self.physics_eng.arm['jointW0'].speed
+    joint1_a = self.physics_eng.arm['joint01'].angle
+    joint1_v = self.physics_eng.arm['joint01'].speed
     self.state = (np.array([ball0_pose[0], ball0_pose[1]]),
                   np.array([ball1_pose[0], ball1_pose[1]]),
-                  np.array([joint0, joint1]))
+                  np.array([joint0_a, joint1_a]),
+                  np.array([joint0_v, joint1_v]))
     self.steps += 1
     return self.state
 

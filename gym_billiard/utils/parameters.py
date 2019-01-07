@@ -27,4 +27,4 @@ class Params(object):
   TARGET_FPS = 20
   TIME_STEP = 1.0 / TARGET_FPS
 
-  MAX_ENV_STEPS = 200
+  MAX_ENV_STEPS = 500

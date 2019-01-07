@@ -10,6 +10,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 class BilliardEnv(gym.Env):
+  '''
+  State is composed of:
+  s = ([ball_x, ball_y], [joint0_angle, joint1_angle], [joint0_speed, joint1_speed])
+
+  The values that these components can take are:
+  ball_x, ball_y -> [-1.5, 1.5]
+  joint0_angle -> [-pi/2, pi/2]
+  joint1_angle -> [-pi, pi]
+  joint0_speed, joint1_speed -> [-50, 50]
+  '''
   metadata = {'render.modes': ['human'],
               'video.frames_per_second':15
               }
@@ -26,9 +36,10 @@ class BilliardEnv(gym.Env):
     # Arm joint can have positons:
     # Joint 0: [-Pi/2, Pi/2]
     # Joint 1: [-Pi, Pi]
-    arm_joints = spaces.Box(low=np.array([-np.pi/2, -np.pi]), high=np.array([np.pi/2, np.pi]))
+    joints_angle = spaces.Box(low=np.array([-np.pi/2, -np.pi]), high=np.array([np.pi/2, np.pi]))
+    joints_vel = spaces.Box(low=np.array([-50, -50]), high=np.array([50, 50]))
 
-    self.observation_space = spaces.Tuple([ball_os, arm_joints])
+    self.observation_space = spaces.Tuple([ball_os, joints_angle, joints_vel])
 
     # Actions are torques on joints and open/close of arm grip.
     # Joint torques can be between [-1, 1]
@@ -57,9 +68,11 @@ class BilliardEnv(gym.Env):
     This function returns the state after reading the simulator parameters.
     '''
     ball_pose = self.physics_eng.balls[0].position + self.physics_eng.wt_transform
-    joint0 = self.physics_eng.arm['jointW0'].angle
-    joint1 = self.physics_eng.arm['joint01'].angle
-    self.state = (np.array([ball_pose[0], ball_pose[1]]), np.array([joint0, joint1]))
+    joint0_a = self.physics_eng.arm['jointW0'].angle
+    joint0_v = self.physics_eng.arm['jointW0'].speed
+    joint1_a = self.physics_eng.arm['joint01'].angle
+    joint1_v = self.physics_eng.arm['joint01'].speed
+    self.state = (np.array([ball_pose[0], ball_pose[1]]), np.array([joint0_a, joint1_a]), np.array([joint0_v, joint1_v]))
     self.steps += 1
     return self.state
 
