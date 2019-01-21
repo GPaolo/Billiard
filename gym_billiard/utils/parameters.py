@@ -3,28 +3,31 @@ import numpy as np
 class Params(object):
   # Define simulation parameters (Might move them to a param file)
   # The world is centered at the lower left corner of the table
-  TABLE_SIZE = np.array([3., 3.])
-  TABLE_CENTER = np.array(TABLE_SIZE / 2)
-  DISPLAY_SIZE = (600, 600)
-  TO_PIXEL = np.array(DISPLAY_SIZE) / TABLE_SIZE
+  def __init__(self):
+    self.TABLE_SIZE = np.array([3., 3.])
+    self.TABLE_CENTER = np.array(self.TABLE_SIZE / 2)
+    self.DISPLAY_SIZE = (600, 600)
+    self.TO_PIXEL = np.array(self.DISPLAY_SIZE) / self.TABLE_SIZE
 
-  LINK_0_LENGTH = 1.
-  LINK_1_LENGTH = 1.
-  LINK_ELASTICITY = 0.
-  LINK_FRICTION = .9
-  LINK_THICKNESS = 0.05
+    self.LINK_0_LENGTH = 1.
+    self.LINK_1_LENGTH = 1.
+    self.LINK_ELASTICITY = 0.
+    self.LINK_FRICTION = .9
+    self.LINK_THICKNESS = 0.05
 
-  BALL_RADIUS = .1
-  BALL_ELASTICITY = .9
-  BALL_FRICTION = .9
+    self.BALL_RADIUS = .1
+    self.BALL_ELASTICITY = .9
+    self.BALL_FRICTION = .9
 
-  WALL_THICKNESS = .05
-  WALL_ELASTICITY = .95
-  WALL_FRICTION = .9
+    self.WALL_THICKNESS = .05
+    self.WALL_ELASTICITY = .95
+    self.WALL_FRICTION = .9
 
   # Graphic params
-  PPM = int(min(DISPLAY_SIZE)/max(TABLE_SIZE))
-  TARGET_FPS = 20
-  TIME_STEP = 1.0 / TARGET_FPS
+    self.PPM = int(min(self.DISPLAY_SIZE)/max(self.TABLE_SIZE))
+    self.TARGET_FPS = 20
+    self.TIME_STEP = 1.0 / self.TARGET_FPS
 
-  MAX_ENV_STEPS = 500
+    self.MAX_ENV_STEPS = 500
+
+  TORQUE_CONTROL = False

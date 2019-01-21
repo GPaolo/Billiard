@@ -2,6 +2,7 @@ import Box2D as b2
 import pygame
 import numpy as np
 from gym_billiard.utils import parameters
+from pprint import pprint
 
 
 # TODO implement different intial arm positions
@@ -34,11 +35,13 @@ class PhysicsSim(object):
     else:
       self.params = params
 
+    pprint('Parameters: {}'.format(vars(self.params)))
+
     # Create physic simulator
     self.world = b2.b2World(gravity=(0, 0), doSleep=True)
     self.dt = 1./60
-    self.vel_iter = 10
-    self.pos_iter = 10
+    self.vel_iter = 100
+    self.pos_iter = 100
     self._create_table()
     self._create_balls(balls_pose)
     self._create_robotarm(arm_position)
@@ -89,10 +92,12 @@ class PhysicsSim(object):
                                           bullet=True,
                                           allowSleep=True,
                                           userData={'name': 'ball{}'.format(idx)},
+                                          linearDamping=1,
+                                          angularDamping=1,
                                           fixtures=b2.b2FixtureDef(shape=b2.b2CircleShape(radius=self.params.BALL_RADIUS),
-                                                                   density=1.0,
+                                                                   density=.5,
                                                                    friction=self.params.BALL_FRICTION,
-                                                                   restitution=self.params.BALL_ELASTICITY))
+                                                                   restitution=self.params.BALL_ELASTICITY,))
       self.balls.append(ball)
 
   def _create_robotarm(self, arm_position=None):
@@ -108,7 +113,7 @@ class PhysicsSim(object):
                                          fixtures=b2.b2FixtureDef(
                                            shape=b2.b2PolygonShape(box=(self.params.LINK_THICKNESS,
                                                                         self.params.LINK_0_LENGTH/2)),
-                                           density=1,
+                                           density=3,
                                            friction=self.params.LINK_FRICTION,
                                            restitution=self.params.LINK_ELASTICITY))
 
@@ -120,7 +125,7 @@ class PhysicsSim(object):
                                          fixtures=b2.b2FixtureDef(
                                            shape=b2.b2PolygonShape(box=(self.params.LINK_THICKNESS,
                                                                         self.params.LINK_1_LENGTH / 2)),
-                                           density=1,
+                                           density=3,
                                            friction=self.params.LINK_FRICTION,
                                            restitution=self.params.LINK_ELASTICITY))
 
@@ -130,7 +135,7 @@ class PhysicsSim(object):
                                              lowerAngle=-.5 * b2.b2_pi,
                                              upperAngle=.5 * b2.b2_pi,
                                              enableLimit=True,
-                                             maxMotorTorque=10.0,
+                                             maxMotorTorque=1000.0,
                                              motorSpeed=0.0,
                                              enableMotor=True)
 
@@ -140,7 +145,7 @@ class PhysicsSim(object):
                                              lowerAngle=-b2.b2_pi,
                                              upperAngle=b2.b2_pi,
                                              enableLimit=False,
-                                             maxMotorTorque=10.0,
+                                             maxMotorTorque=1000.0,
                                              motorSpeed=0.0,
                                              enableMotor=True)
 
@@ -164,9 +169,12 @@ class PhysicsSim(object):
     self._create_balls(balls_pose)
     self._create_robotarm(arm_position)
 
-  def apply_torque_to_joint(self, joint, torque):
+  def move_joint(self, joint, value):
     speed = self.arm[joint].motorSpeed
-    self.arm[joint].motorSpeed = speed + torque * self.dt
+    if self.params.TORQUE_CONTROL:
+      self.arm[joint].motorSpeed = speed + value * self.dt
+    else:
+      self.arm[joint].motorSpeed = value
 
   def step(self):
     '''
