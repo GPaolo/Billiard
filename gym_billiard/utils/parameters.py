@@ -30,4 +30,4 @@ class Params(object):
 
     self.MAX_ENV_STEPS = 500
 
-  TORQUE_CONTROL = False
+    self.TORQUE_CONTROL = True
