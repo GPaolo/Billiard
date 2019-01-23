@@ -13,7 +13,7 @@ for i in range(10):
   obs = env.reset()
 
   for t in range(10000):
-    action = [0.,cos(.5**t)]
+    action = [0.,-10.]
     if t % 50 == 0:
       # action = env.action_space.sample()
       print('Action {}'.format(action))
@@ -24,4 +24,4 @@ for i in range(10):
     # print(obs[1])
     if done:
       print("Episode finished after {} timesteps".format(t + 1))
-      break
+      # break

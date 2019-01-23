@@ -77,7 +77,7 @@ class BilliardEnv(gym.Env):
     return self.state
 
   def step(self, action):
-    action = np.clip(action, -1, 1)
+    # action = np.clip(action, -1, 1)
 
     # Set motor torques
     self.physics_eng.move_joint('jointW0', action[0])

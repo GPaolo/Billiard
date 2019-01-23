@@ -19,15 +19,16 @@ class Params(object):
     self.BALL_ELASTICITY = .9
     self.BALL_FRICTION = .9
 
-    self.WALL_THICKNESS = .05
+    self.WALL_THICKNESS = .1
     self.WALL_ELASTICITY = .95
     self.WALL_FRICTION = .9
 
   # Graphic params
     self.PPM = int(min(self.DISPLAY_SIZE)/max(self.TABLE_SIZE))
-    self.TARGET_FPS = 20
+    self.TARGET_FPS = 60
     self.TIME_STEP = 1.0 / self.TARGET_FPS
 
     self.MAX_ENV_STEPS = 500
 
     self.TORQUE_CONTROL = True
+    self.TEST = True
