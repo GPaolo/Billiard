@@ -135,7 +135,7 @@ class PhysicsSim(object):
                                              lowerAngle=-.4 * b2.b2_pi,
                                              upperAngle=.4 * b2.b2_pi,
                                              enableLimit=True,
-                                             maxMotorTorque=1000.0,
+                                             maxMotorTorque=100000.0,
                                              motorSpeed=0.0,
                                              enableMotor=True)
 
@@ -145,7 +145,7 @@ class PhysicsSim(object):
                                              lowerAngle=-b2.b2_pi*0.9,
                                              upperAngle=b2.b2_pi*0.9,
                                              enableLimit=True,
-                                             maxMotorTorque=100.0,
+                                             maxMotorTorque=10000.0,
                                              motorSpeed=0.0,
                                              enableMotor=True)
 
