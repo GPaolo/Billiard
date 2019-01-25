@@ -23,6 +23,9 @@ class Params(object):
     self.WALL_ELASTICITY = .95
     self.WALL_FRICTION = .9
 
+    self.VEL_ITER = 100
+    self.POS_ITER = 100
+
   # Graphic params
     self.PPM = int(min(self.DISPLAY_SIZE)/max(self.TABLE_SIZE))
     self.TARGET_FPS = 60

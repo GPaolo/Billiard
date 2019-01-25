@@ -5,7 +5,7 @@ from gym_billiard.utils import parameters
 from pprint import pprint
 
 
-# TODO implement different intial arm positions
+# TODO implement different initial arm positions
 # TODO implement checks on balls spawning positions (not in holes or on arm or overlapped'
 
 # Extend polygon shape with drawing function
@@ -40,8 +40,8 @@ class PhysicsSim(object):
     # Create physic simulator
     self.world = b2.b2World(gravity=(0, 0), doSleep=True)
     self.dt = self.params.TIME_STEP
-    self.vel_iter = 100
-    self.pos_iter = 100
+    self.vel_iter = self.params.VEL_ITER
+    self.pos_iter = self.params.POS_ITER
     self._create_table()
     self._create_balls(balls_pose)
     self._create_robotarm(arm_position)
@@ -100,6 +100,17 @@ class PhysicsSim(object):
                                                                    restitution=self.params.BALL_ELASTICITY,))
       self.balls.append(ball)
 
+  def _calculate_arm_pose(self, arm_position=None):
+    '''
+    This function calculates the arm initial position according to the joints angles
+    :param arm_position:
+    :return: link0 and link1 position.
+    '''
+    if arm_position is None:
+      return (self.params.TABLE_CENTER[0], self.params.LINK_0_LENGTH/2), \
+             (self.params.TABLE_CENTER[0], self.params.LINK_0_LENGTH - .1 + self.params.LINK_1_LENGTH / 2)
+
+
   def _create_robotarm(self, arm_position=None):
     '''
     Creates the robotic arm.
@@ -107,6 +118,7 @@ class PhysicsSim(object):
     :return:
     '''
     link0 = self.world.CreateDynamicBody(position=(self.params.TABLE_CENTER[0], self.params.LINK_0_LENGTH/2),
+                                         angle=0,
                                          bullet=True,
                                          allowSleep=True,
                                          userData={'name': 'link0'},
@@ -171,13 +183,14 @@ class PhysicsSim(object):
 
   def move_joint(self, joint, value):
     speed = self.arm[joint].motorSpeed
-    # Limit max joint speed
-    if np.abs(speed) > 8:
-      return
     if self.params.TORQUE_CONTROL:
-      self.arm[joint].motorSpeed = speed + value * self.dt
+      speed = speed + value * self.dt
     else:
-      self.arm[joint].motorSpeed = value
+      speed = value
+
+    # Limit max joint speed
+    self.arm[joint].motorSpeed = np.sign(speed)*min(1, np.abs(speed))
+
 
   def step(self):
     '''
@@ -189,4 +202,4 @@ class PhysicsSim(object):
 
 if __name__ == "__main__":
   phys = PhysicsSim(balls_pose=[[0, 0], [1, 1]])
-  print(phys.walls[0])
+  print(phys.arm['link0'])

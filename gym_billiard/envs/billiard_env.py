@@ -51,9 +51,10 @@ class BilliardEnv(gym.Env):
     self.np_random, seed = seeding.np_random(seed)
     return [seed]
 
-  def reset(self):
-    init_ball_pose = np.array([self.np_random.uniform(low=-1.5, high=1.5), # x
-                               self.np_random.uniform(low=-1.5, high=0)])  # y
+  def reset(self, ball_pose=None):
+    # init_ball_pose = np.array([self.np_random.uniform(low=-1.5, high=1.5), # x
+    #                            self.np_random.uniform(low=-1.5, high=0)])  # y
+    init_ball_pose = np.array([-.5, -1])
 
     init_joint_pose = np.array([self.np_random.uniform(low=-np.pi/2, high=np.pi/2), # Joint0
                                 self.np_random.uniform(low=-np.pi, high=np.pi)])    # Joint1
