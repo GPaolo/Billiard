@@ -59,7 +59,6 @@ class BilliardEnv(gym.Env):
     init_joint_pose = np.array([self.np_random.uniform(low=-np.pi/2, high=np.pi/2), # Joint0
                                 self.np_random.uniform(low=-np.pi, high=np.pi)])    # Joint1
 
-    init_joint_pose = np.zeros(2)
     self.physics_eng.reset([init_ball_pose], init_joint_pose)
     self.steps = 0
     return self._get_obs()

@@ -29,7 +29,7 @@ b2.b2.circleShape.draw = my_draw_circle
 
 class PhysicsSim(object):
 
-  def __init__(self, balls_pose=[[0, 0]], arm_position=None, params=None):
+  def __init__(self, balls_pose=[[0, 0]], arm_position=[1, 0], params=None):
     if params is None:
       self.params = parameters.Params()
     else:
@@ -102,13 +102,39 @@ class PhysicsSim(object):
 
   def _calculate_arm_pose(self, arm_position=None):
     '''
-    This function calculates the arm initial position according to the joints angles
+    This function calculates the arm initial position according to the joints angles in randiants
     :param arm_position:
     :return: link0 and link1 position.
     '''
-    if arm_position is None:
-      return (self.params.TABLE_CENTER[0], self.params.LINK_0_LENGTH/2), \
-             (self.params.TABLE_CENTER[0], self.params.LINK_0_LENGTH - .1 + self.params.LINK_1_LENGTH / 2)
+    pose = {'link0_center': np.array((self.params.TABLE_CENTER[0], self.params.LINK_0_LENGTH/2)),
+            'link1_center': np.array((self.params.TABLE_CENTER[0], self.params.LINK_0_LENGTH - .1 + self.params.LINK_1_LENGTH / 2)),
+            'joint01_center': np.array([self.params.TABLE_CENTER[0], self.params.LINK_0_LENGTH])}
+    if arm_position is not None:
+      ## LINK 0
+      l0_joint_center = np.array([self.params.TABLE_CENTER[0], 0]) # Get joint0 position
+      pose['link0_center'] = pose['link0_center'] - l0_joint_center # Center link0 on joint0 position
+      # Rotate link0 center according to joint0 angle
+      x = np.cos(arm_position[0]) * pose['link0_center'][0] - np.sin(arm_position[0]) * pose['link0_center'][1]
+      y = np.sin(arm_position[0]) * pose['link0_center'][0] + np.cos(arm_position[0]) * pose['link0_center'][1]
+      pose['link0_center'] = np.array((x, y)) + l0_joint_center
+
+      ## LINK 1
+      l1_joint_center = pose['joint01_center'] # Get joint1 position
+      pose['link1_center'] = pose['link1_center'] - l1_joint_center # Center link1 on joint1 position
+      # Rotate link1 center according to joint1 angle
+      x = np.cos(arm_position[1]) * pose['link1_center'][0] - np.sin(arm_position[1]) * pose['link1_center'][1]
+      y = np.sin(arm_position[1]) * pose['link1_center'][0] + np.cos(arm_position[1]) * pose['link1_center'][1]
+
+      l1_joint_center = l1_joint_center - l0_joint_center  # Center joint1 on joint0 position
+      # Rotate joint1 center according to joint0 angle
+      jx = np.cos(arm_position[0]) * l1_joint_center[0] - np.sin(arm_position[0]) * l1_joint_center[1]
+      jy = np.sin(arm_position[0]) * l1_joint_center[0] + np.cos(arm_position[0]) * l1_joint_center[1]
+      l1_joint_center = np.array((jx, jy)) + l0_joint_center
+
+      pose['link1_center'] = np.array((x, y)) + l1_joint_center
+      pose['joint01_center'] = l1_joint_center
+    return pose
+
 
 
   def _create_robotarm(self, arm_position=None):
@@ -117,8 +143,9 @@ class PhysicsSim(object):
     :param angular_position: Initial angular position
     :return:
     '''
-    link0 = self.world.CreateDynamicBody(position=(self.params.TABLE_CENTER[0], self.params.LINK_0_LENGTH/2),
-                                         angle=0,
+    arm_pose = self._calculate_arm_pose(arm_position)
+    link0 = self.world.CreateDynamicBody(position=arm_pose['link0_center'],
+                                         angle=arm_position[0],
                                          bullet=True,
                                          allowSleep=True,
                                          userData={'name': 'link0'},
@@ -130,7 +157,8 @@ class PhysicsSim(object):
                                            restitution=self.params.LINK_ELASTICITY))
 
     # The -.1 in the position is so that the two links can overlap in order to create the joint
-    link1 = self.world.CreateDynamicBody(position=(self.params.TABLE_CENTER[0], self.params.LINK_0_LENGTH - .1 + self.params.LINK_1_LENGTH / 2),
+    link1 = self.world.CreateDynamicBody(position=arm_pose['link1_center'],
+                                         angle=arm_position[1],
                                          bullet=True,
                                          allowSleep=True,
                                          userData={'name': 'link1'},
@@ -153,7 +181,7 @@ class PhysicsSim(object):
 
     joint01 = self.world.CreateRevoluteJoint(bodyA=link0,
                                              bodyB=link1,
-                                             anchor=link0.worldCenter + b2.b2Vec2((0, self.params.LINK_0_LENGTH/2)),
+                                             anchor=arm_pose['joint01_center'],
                                              lowerAngle=-b2.b2_pi*0.9,
                                              upperAngle=b2.b2_pi*0.9,
                                              enableLimit=True,
@@ -190,7 +218,6 @@ class PhysicsSim(object):
 
     # Limit max joint speed
     self.arm[joint].motorSpeed = np.sign(speed)*min(1, np.abs(speed))
-
 
   def step(self):
     '''

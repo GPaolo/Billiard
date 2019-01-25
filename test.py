@@ -13,7 +13,7 @@ for i in range(10):
   obs = env.reset()
 
   for t in range(10000):
-    action = [10, 100]
+    action = [0, 0.1]
     if t % 50 == 0:
       # action = env.action_space.sample()
       print('Action {}'.format(action))
