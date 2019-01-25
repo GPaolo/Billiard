@@ -29,7 +29,7 @@ b2.b2.circleShape.draw = my_draw_circle
 
 class PhysicsSim(object):
 
-  def __init__(self, balls_pose=[[0, 0]], arm_position=[1, 0], params=None):
+  def __init__(self, balls_pose=[[0, 0]], arm_position=None, params=None):
     if params is None:
       self.params = parameters.Params()
     else:
@@ -108,7 +108,9 @@ class PhysicsSim(object):
     '''
     pose = {'link0_center': np.array((self.params.TABLE_CENTER[0], self.params.LINK_0_LENGTH/2)),
             'link1_center': np.array((self.params.TABLE_CENTER[0], self.params.LINK_0_LENGTH - .1 + self.params.LINK_1_LENGTH / 2)),
-            'joint01_center': np.array([self.params.TABLE_CENTER[0], self.params.LINK_0_LENGTH])}
+            'joint01_center': np.array([self.params.TABLE_CENTER[0], self.params.LINK_0_LENGTH]),
+            'link0_angle':0,
+            'link1_angle':0}
     if arm_position is not None:
       ## LINK 0
       l0_joint_center = np.array([self.params.TABLE_CENTER[0], 0]) # Get joint0 position
@@ -133,6 +135,9 @@ class PhysicsSim(object):
 
       pose['link1_center'] = np.array((x, y)) + l1_joint_center
       pose['joint01_center'] = l1_joint_center
+      pose['link0_angle'] = arm_position[0]
+      pose['link1_angle'] = arm_position[1]  # Have to also center the angle
+
     return pose
 
 
@@ -145,7 +150,7 @@ class PhysicsSim(object):
     '''
     arm_pose = self._calculate_arm_pose(arm_position)
     link0 = self.world.CreateDynamicBody(position=arm_pose['link0_center'],
-                                         angle=arm_position[0],
+                                         angle=arm_pose['link0_angle'],
                                          bullet=True,
                                          allowSleep=True,
                                          userData={'name': 'link0'},
@@ -158,7 +163,7 @@ class PhysicsSim(object):
 
     # The -.1 in the position is so that the two links can overlap in order to create the joint
     link1 = self.world.CreateDynamicBody(position=arm_pose['link1_center'],
-                                         angle=arm_position[1],
+                                         angle=arm_pose['link1_angle'],
                                          bullet=True,
                                          allowSleep=True,
                                          userData={'name': 'link1'},
@@ -172,8 +177,8 @@ class PhysicsSim(object):
     jointW0 = self.world.CreateRevoluteJoint(bodyA=self.walls[3],
                                              bodyB=link0,
                                              anchor=self.walls[3].worldCenter,
-                                             lowerAngle=-.4 * b2.b2_pi,
-                                             upperAngle=.4 * b2.b2_pi,
+                                             lowerAngle=-.4 * b2.b2_pi - arm_pose['link0_angle'],
+                                             upperAngle=.4 * b2.b2_pi - arm_pose['link0_angle'],
                                              enableLimit=True,
                                              maxMotorTorque=100000.0,
                                              motorSpeed=0.0,
@@ -182,8 +187,8 @@ class PhysicsSim(object):
     joint01 = self.world.CreateRevoluteJoint(bodyA=link0,
                                              bodyB=link1,
                                              anchor=arm_pose['joint01_center'],
-                                             lowerAngle=-b2.b2_pi*0.9,
-                                             upperAngle=b2.b2_pi*0.9,
+                                             lowerAngle=-b2.b2_pi*0.9 + arm_pose['link0_angle'] - arm_pose['link1_angle'],
+                                             upperAngle=b2.b2_pi*0.9 + arm_pose['link0_angle'] - arm_pose['link1_angle'],
                                              enableLimit=True,
                                              maxMotorTorque=10000.0,
                                              motorSpeed=0.0,
@@ -210,6 +215,7 @@ class PhysicsSim(object):
     self._create_robotarm(arm_position)
 
   def move_joint(self, joint, value):
+    print('{} angle {}'.format(joint, self.arm[joint].angle))
     speed = self.arm[joint].motorSpeed
     if self.params.TORQUE_CONTROL:
       speed = speed + value * self.dt

@@ -54,10 +54,10 @@ class BilliardEnv(gym.Env):
   def reset(self, ball_pose=None):
     # init_ball_pose = np.array([self.np_random.uniform(low=-1.5, high=1.5), # x
     #                            self.np_random.uniform(low=-1.5, high=0)])  # y
-    init_ball_pose = np.array([-.5, -1])
+    init_ball_pose = np.array([.5, 1])
 
-    init_joint_pose = np.array([self.np_random.uniform(low=-np.pi/2, high=np.pi/2), # Joint0
-                                self.np_random.uniform(low=-np.pi, high=np.pi)])    # Joint1
+    init_joint_pose = np.array([self.np_random.uniform(low=-np.pi * .2, high=np.pi * .2), # Joint0
+                                self.np_random.uniform(low=-np.pi * .9, high=np.pi * .9)])    # Joint1
 
     self.physics_eng.reset([init_ball_pose], init_joint_pose)
     self.steps = 0

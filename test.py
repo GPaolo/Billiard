@@ -13,10 +13,7 @@ for i in range(10):
   obs = env.reset()
 
   for t in range(10000):
-    action = [0, 0.1]
-    if t % 50 == 0:
-      # action = env.action_space.sample()
-      print('Action {}'.format(action))
+    action = [1, -1]
     env.render()
     # print('t {} - Obs {} - Action {}'.format(t, obs, action))
     obs, reward, done, info = env.step(action)
