@@ -35,3 +35,5 @@ class Params(object):
 
     self.TORQUE_CONTROL = True
     self.TEST = True
+
+    self.RANDOM_ARM_INIT_POSE = False
