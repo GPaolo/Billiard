@@ -140,8 +140,6 @@ class PhysicsSim(object):
 
     return pose
 
-
-
   def _create_robotarm(self, arm_position=None):
     '''
     Creates the robotic arm.
@@ -215,7 +213,6 @@ class PhysicsSim(object):
     self._create_robotarm(arm_position)
 
   def move_joint(self, joint, value):
-    print('{} angle {}'.format(joint, self.arm[joint].angle))
     speed = self.arm[joint].motorSpeed
     if self.params.TORQUE_CONTROL:
       speed = speed + value * self.dt
