@@ -13,7 +13,7 @@ for i in range(10):
   obs = env.reset()
 
   for t in range(10000):
-    action = [1, -1]
+    action = [1, 1]
     env.render()
     # print('t {} - Obs {} - Action {}'.format(t, obs, action))
     obs, reward, done, info = env.step(action)

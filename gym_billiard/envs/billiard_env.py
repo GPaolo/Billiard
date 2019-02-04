@@ -56,7 +56,7 @@ class BilliardEnv(gym.Env):
       init_ball_pose = np.array([self.np_random.uniform(low=-1.3, high=1.3), # x
                                  self.np_random.uniform(low=-1.3, high=0)])  # y
     else:
-      init_ball_pose = np.array([-0.5, -0.5])
+      init_ball_pose = np.array([-0.5, 0.2])
 
     if self.params.RANDOM_ARM_INIT_POSE:
       init_joint_pose = np.array([self.np_random.uniform(low=-np.pi * .2, high=np.pi * .2), # Joint0
