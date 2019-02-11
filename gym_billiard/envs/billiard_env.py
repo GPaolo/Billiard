@@ -110,27 +110,36 @@ class BilliardEnv(gym.Env):
 
     return self.state, reward, final, {}
 
-  def render(self, mode='human', close=False):
+  def render(self, mode='human', rendered=True):
     import pygame
 
-    if self.screen is None:
+    if self.screen is None and rendered:
       self.screen = pygame.display.set_mode((self.params.DISPLAY_SIZE[0], self.params.DISPLAY_SIZE[1]), 0, 32)
       pygame.display.set_caption('Billiard')
       self.clock = pygame.time.Clock()
 
     if self.state is None: return None
 
-    self.screen.fill(pygame.color.THECOLORS["white"])
+    if rendered:
+      self.screen.fill(pygame.color.THECOLORS["white"])
+    else:
+      capture = pygame.Surface((self.params.DISPLAY_SIZE[0], self.params.DISPLAY_SIZE[1]))
 
     # Draw holes. This are just drawn, but are not simulated.
     for hole in self.physics_eng.holes:
       # To world transform (The - is to take into account pygame coordinate system)
       pose = -hole['pose'] + self.physics_eng.tw_transform
 
-      pygame.draw.circle(self.screen,
-                         (255, 0, 0),
-                         [int(pose[0] * self.params.PPM), int(pose[1] * self.params.PPM)],
-                         int(hole['radius'] * self.params.PPM))
+      if rendered:
+        pygame.draw.circle(self.screen,
+                           (255, 0, 0),
+                           [int(pose[0] * self.params.PPM), int(pose[1] * self.params.PPM)],
+                           int(hole['radius'] * self.params.PPM))
+      else:
+        pygame.draw.circle(capture,
+                           (255, 0, 0),
+                           [int(pose[0] * self.params.PPM), int(pose[1] * self.params.PPM)],
+                           int(hole['radius'] * self.params.PPM))
 
     # Draw bodies
     for body in self.physics_eng.world.bodies:
@@ -144,9 +153,15 @@ class BilliardEnv(gym.Env):
         color = [150, 150, 150]
 
       for fixture in body.fixtures:
-        fixture.shape.draw(body, self.screen, self.params, color)
+        if rendered:
+          fixture.shape.draw(body, self.screen, self.params, color)
+        else:
+          fixture.shape.draw(body, capture, self.params, color)
 
-    pygame.display.flip()
-    self.clock.tick(self.params.TARGET_FPS)
-
-    return self.screen
+    if rendered:
+      pygame.display.flip()
+      self.clock.tick(self.params.TARGET_FPS)
+      return self.screen
+    else:
+      imgdata = pygame.surfarray.array3d(capture)
+      return imgdata.swapaxes(0,1)

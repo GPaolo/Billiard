@@ -14,11 +14,10 @@ for i in range(10):
 
   for t in range(10000):
     action = [1, 1]
-    env.render()
-    # print('t {} - Obs {} - Action {}'.format(t, obs, action))
+    img = env.render(rendered=False)
+    env.render(rendered=True)
+    from matplotlib import pyplot as plt
+
+    plt.imshow(img, interpolation='nearest')
+    plt.draw()
     obs, reward, done, info = env.step(action)
-    # print('Ball Vel {}'.format(obs[2]))
-    # print(obs[1])
-    # if done:
-      # print("Episode finished after {} timesteps".format(t + 1))
-      # break
