@@ -45,18 +45,25 @@ class BilliardHardEnv(gym.Env):
     return [seed]
 
   def reset(self):
-    init_ball0_pose = np.array([self.np_random.uniform(low=-1.5, high=1.5), # x
-                                self.np_random.uniform(low=-1.5, high=0)])  # y
+    if self.params.RANDOM_BALL_INIT_POSE:
+      init_ball0_pose = np.array([self.np_random.uniform(low=-1.3, high=1.3), # x
+                                 self.np_random.uniform(low=-1.3, high=0)])  # y
+      init_ball1_pose = np.array([self.np_random.uniform(low=-1, high=1),  # x
+                                  self.np_random.uniform(low=1, high=1.3)])  # y
+    else:
+      init_ball0_pose = np.array([-0.5, 0.2])
+      init_ball1_pose = np.array([0, 1])
 
-    init_ball1_pose = np.array([self.np_random.uniform(low=-1.5, high=1.5), # x
-                                self.np_random.uniform(low=0, high=1.5)])  # y
+    if self.params.RANDOM_ARM_INIT_POSE:
+      init_joint_pose = np.array([self.np_random.uniform(low=-np.pi * .2, high=np.pi * .2),  # Joint0
+                                  self.np_random.uniform(low=-np.pi * .9, high=np.pi * .9)])  # Joint1
+    else:
+      init_joint_pose = None
 
-    init_joint_pose = np.array([self.np_random.uniform(low=-np.pi/2, high=np.pi/2), # Joint0
-                                self.np_random.uniform(low=-np.pi, high=np.pi)])    # Joint1
-
-    init_joint_pose = np.zeros(2)
     self.physics_eng.reset([init_ball0_pose, init_ball1_pose], init_joint_pose)
     self.steps = 0
+    self.ball0_in_hole = False
+    self.ball1_in_hole = False
     return self._get_obs()
 
   def _get_obs(self):
@@ -65,6 +72,12 @@ class BilliardHardEnv(gym.Env):
     '''
     ball0_pose = self.physics_eng.balls[0].position + self.physics_eng.wt_transform
     ball1_pose = self.physics_eng.balls[1].position + self.physics_eng.wt_transform
+
+    if np.abs(ball0_pose[0])> 1.5 or np.abs(ball0_pose[1]) > 1.5:
+      raise ValueError('Ball 0 out of map in position: {}'.format(ball0_pose))
+    if np.abs(ball1_pose[0])> 1.5 or np.abs(ball1_pose[1]) > 1.5:
+      raise ValueError('Ball 1 out of map in position: {}'.format(ball1_pose))
+
     joint0_a = self.physics_eng.arm['jointW0'].angle
     joint0_v = self.physics_eng.arm['jointW0'].speed
     joint1_a = self.physics_eng.arm['joint01'].angle
@@ -77,11 +90,11 @@ class BilliardHardEnv(gym.Env):
     return self.state
 
   def step(self, action):
-    action = np.clip(action, -1, 1)
+    # action = np.clip(action, -1, 1)
 
     # Set motor torques
-    self.physics_eng.apply_torque_to_joint('jointW0', action[0])
-    self.physics_eng.apply_torque_to_joint('joint01', action[1])
+    self.physics_eng.move_joint('jointW0', action[0])
+    self.physics_eng.move_joint('joint01', action[1])
     # Simulate timestep
     self.physics_eng.step()
     #Get state
@@ -97,22 +110,31 @@ class BilliardHardEnv(gym.Env):
     for hole in self.physics_eng.holes:
       dist_ball0 = np.linalg.norm(ball0_pose - hole['pose'])
       dist_ball1 = np.linalg.norm(ball1_pose - hole['pose'])
-      # Gets positive reward only if ball 1 goes in the hole
-      # If only ball 0 goes in the hole, reward is negative
-      # If both go, reward is positive but lower.
+
+      if dist_ball0 <= hole['radius']:
+        self.ball0_in_hole = True
       if dist_ball1 <= hole['radius']:
+        self.ball1_in_hole = True
+
+      # Only B1 in hole, get reward but keep on playing
+      if self.ball1_in_hole and not self.ball0_in_hole:
+        final = False
+        reward = 50
+      # Both in hole, get reward and finish the game
+      elif self.ball1_in_hole and self.ball0_in_hole:
         final = True
-        reward += 100
-      elif dist_ball0 <= hole['radius']:
+        reward = 50
+      # Only B0 in hole, get negative reward and finish the game
+      elif not self.ball1_in_hole and self.ball0_in_hole:
         final = True
-        reward += -50
+        reward = -50
 
     if self.steps >= self.params.MAX_ENV_STEPS:
       final = True
 
     return self.state, reward, final, {}
 
-  def render(self, mode='human', close=False):
+  def render(self, mode='human', rendered=True):
     import pygame
 
     if self.screen is None:
@@ -122,17 +144,26 @@ class BilliardHardEnv(gym.Env):
 
     if self.state is None: return None
 
-    self.screen.fill(pygame.color.THECOLORS["white"])
+    if rendered:
+      self.screen.fill(pygame.color.THECOLORS["white"])
+    else:
+      capture = pygame.Surface((self.params.DISPLAY_SIZE[0], self.params.DISPLAY_SIZE[1]))
 
     # Draw holes. This are just drawn, but are not simulated.
     for hole in self.physics_eng.holes:
       # To world transform (The - is to take into account pygame coordinate system)
       pose = -hole['pose'] + self.physics_eng.tw_transform
 
-      pygame.draw.circle(self.screen,
-                         (255, 0, 0),
-                         [int(pose[0] * self.params.PPM), int(pose[1] * self.params.PPM)],
-                         int(hole['radius'] * self.params.PPM))
+      if rendered:
+        pygame.draw.circle(self.screen,
+                           (255, 0, 0),
+                           [int(pose[0] * self.params.PPM), int(pose[1] * self.params.PPM)],
+                           int(hole['radius'] * self.params.PPM))
+      else:
+        pygame.draw.circle(capture,
+                           (255, 0, 0),
+                           [int(pose[0] * self.params.PPM), int(pose[1] * self.params.PPM)],
+                           int(hole['radius'] * self.params.PPM))
 
     # Draw bodies
     for body in self.physics_eng.world.bodies:
@@ -148,9 +179,15 @@ class BilliardHardEnv(gym.Env):
         color = [150, 150, 150]
 
       for fixture in body.fixtures:
-        fixture.shape.draw(body, self.screen, self.params, color)
+        if rendered:
+          fixture.shape.draw(body, self.screen, self.params, color)
+        else:
+          fixture.shape.draw(body, capture, self.params, color)
 
-    pygame.display.flip()
-    self.clock.tick(self.params.TARGET_FPS)
-
-    return self.screen
+    if rendered:
+      pygame.display.flip()
+      self.clock.tick(self.params.TARGET_FPS)
+      return self.screen
+    else:
+      imgdata = pygame.surfarray.array3d(capture)
+      return imgdata.swapaxes(0, 1)

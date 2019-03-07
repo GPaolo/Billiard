@@ -52,7 +52,7 @@ class BilliardEnv(gym.Env):
     return [seed]
 
   def reset(self):
-    if self.params.RANDOM_ARM_INIT_POSE:
+    if self.params.RANDOM_BALL_INIT_POSE:
       init_ball_pose = np.array([self.np_random.uniform(low=-1.3, high=1.3), # x
                                  self.np_random.uniform(low=-1.3, high=0)])  # y
     else:
@@ -78,7 +78,8 @@ class BilliardEnv(gym.Env):
     joint1_a = self.physics_eng.arm['joint01'].angle
     joint1_v = self.physics_eng.arm['joint01'].speed
     if np.abs(ball_pose[0])> 1.5 or np.abs(ball_pose[1]) > 1.5:
-      print('WHAT')
+      raise ValueError('Ball out of map in position: {}'.format(ball_pose))
+
     self.state = (np.array([ball_pose[0], ball_pose[1]]), np.array([joint0_a, joint1_a]), np.array([joint0_v, joint1_v]))
     self.steps += 1
     return self.state
