@@ -51,8 +51,8 @@ class BilliardHardEnv(gym.Env):
       init_ball1_pose = np.array([self.np_random.uniform(low=-1, high=1),  # x
                                   self.np_random.uniform(low=1, high=1.3)])  # y
     else:
-      init_ball0_pose = np.array([-0.5, 0.2])
-      init_ball1_pose = np.array([0, 1])
+      init_ball0_pose = np.array([-0.5, 1])
+      init_ball1_pose = np.array([-0.5, 0.2])
 
     if self.params.RANDOM_ARM_INIT_POSE:
       init_joint_pose = np.array([self.np_random.uniform(low=-np.pi * .2, high=np.pi * .2),  # Joint0
@@ -86,8 +86,17 @@ class BilliardHardEnv(gym.Env):
                   np.array([ball1_pose[0], ball1_pose[1]]),
                   np.array([joint0_a, joint1_a]),
                   np.array([joint0_v, joint1_v]))
-    self.steps += 1
     return self.state
+
+  def arm_ball1_contacts(self):
+    """
+    This function checks what is having contacts with ball1.
+    :return: True if arm touches the ball
+    """
+    for contact in self.physics_eng.balls[1].contacts:
+      if 'link' in contact.other.userData['name'] and contact.contact.touching:
+        return True
+    return False
 
   def step(self, action):
     # action = np.clip(action, -1, 1)
@@ -106,33 +115,43 @@ class BilliardHardEnv(gym.Env):
     # Calculates if distance between the ball's center and the holes' center is smaller than the holes' radius
     ball0_pose = self.state[0]
     ball1_pose = self.state[1]
+    info = {}
+    # If arm touches ball 1 finish episode
+    if self.arm_ball1_contacts():
+      reward = -100
+      final = True
+      info['reason'] = 'Arm touched ball 1'
+    else:
+      for hole in self.physics_eng.holes:
+        dist_ball0 = np.linalg.norm(ball0_pose - hole['pose'])
+        dist_ball1 = np.linalg.norm(ball1_pose - hole['pose'])
 
-    for hole in self.physics_eng.holes:
-      dist_ball0 = np.linalg.norm(ball0_pose - hole['pose'])
-      dist_ball1 = np.linalg.norm(ball1_pose - hole['pose'])
+        if dist_ball0 <= hole['radius']:
+          self.ball0_in_hole = True
+        if dist_ball1 <= hole['radius']:
+          self.ball1_in_hole = True
 
-      if dist_ball0 <= hole['radius']:
-        self.ball0_in_hole = True
-      if dist_ball1 <= hole['radius']:
-        self.ball1_in_hole = True
+        # Only B1 in hole, get reward but keep on playing
+        if self.ball1_in_hole and not self.ball0_in_hole:
+          final = False
+          reward = 50
+        # Both in hole, get reward and finish the game
+        elif self.ball1_in_hole and self.ball0_in_hole:
+          final = True
+          reward = 50
+          info['reason'] = 'Both balls in holes'
+        # Only B0 in hole, get negative reward and finish the game
+        elif not self.ball1_in_hole and self.ball0_in_hole:
+          final = True
+          reward = -50
+          info['reason'] = 'Ball 0 in hole before ball 1'
 
-      # Only B1 in hole, get reward but keep on playing
-      if self.ball1_in_hole and not self.ball0_in_hole:
-        final = False
-        reward = 50
-      # Both in hole, get reward and finish the game
-      elif self.ball1_in_hole and self.ball0_in_hole:
-        final = True
-        reward = 50
-      # Only B0 in hole, get negative reward and finish the game
-      elif not self.ball1_in_hole and self.ball0_in_hole:
-        final = True
-        reward = -50
-
+    self.steps += 1
     if self.steps >= self.params.MAX_ENV_STEPS:
       final = True
+      info['Reason'] = 'Max Steps reached: {}'.format(self.steps)
 
-    return self.state, reward, final, {}
+    return self.state, reward, final, info
 
   def render(self, mode='human', rendered=True):
     import pygame
