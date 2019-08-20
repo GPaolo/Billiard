@@ -220,7 +220,7 @@ class PhysicsSim(object):
       speed = value
 
     # Limit max joint speed
-    self.arm[joint].motorSpeed = np.sign(speed)*min(1, np.abs(speed))
+    self.arm[joint].motorSpeed = np.sign(speed)*min(1., np.abs(speed))
 
   def step(self):
     '''

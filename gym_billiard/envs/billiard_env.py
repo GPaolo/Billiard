@@ -24,9 +24,10 @@ class BilliardEnv(gym.Env):
               'video.frames_per_second':15
               }
 
-  def __init__(self, seed=None):
+  def __init__(self, seed=None, max_steps=500):
     self.screen = None
     self.params = parameters.Params()
+    self.params.MAX_ENV_STEPS = max_steps
     self.physics_eng = physics.PhysicsSim()
 
     # Ball XY positions can be between -1.5 and 1.5
