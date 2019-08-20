@@ -32,19 +32,19 @@ class BilliardEnv(gym.Env):
 
     # Ball XY positions can be between -1.5 and 1.5
     ball_os = spaces.Box(low=np.array([-self.params.TABLE_SIZE[0]/2., -self.params.TABLE_SIZE[1]/2.]),
-                         high=np.array([self.params.TABLE_SIZE[0]/2., self.params.TABLE_SIZE[1]/2.]))
+                         high=np.array([self.params.TABLE_SIZE[0]/2., self.params.TABLE_SIZE[1]/2.]), dtype=np.float32)
 
     # Arm joint can have positons:
     # Joint 0: [-Pi/2, Pi/2]
     # Joint 1: [-Pi, Pi]
-    joints_angle = spaces.Box(low=np.array([-np.pi/2, -np.pi]), high=np.array([np.pi/2, np.pi]))
-    joints_vel = spaces.Box(low=np.array([-50, -50]), high=np.array([50, 50]))
+    joints_angle = spaces.Box(low=np.array([-np.pi/2, -np.pi]), high=np.array([np.pi/2, np.pi]), dtype=np.float32)
+    joints_vel = spaces.Box(low=np.array([-50, -50]), high=np.array([50, 50]), dtype=np.float32)
 
     self.observation_space = spaces.Tuple([ball_os, joints_angle, joints_vel])
 
     # Actions are torques on joints and open/close of arm grip.
     # Joint torques can be between [-1, 1]
-    self.action_space = spaces.Box(low=np.array([-1., -1.]), high=np.array([1., 1.]))
+    self.action_space = spaces.Box(low=np.array([-1., -1.]), high=np.array([1., 1.]), dtype=np.float32)
 
     self.seed(seed)
 
@@ -54,8 +54,9 @@ class BilliardEnv(gym.Env):
 
   def reset(self):
     if self.params.RANDOM_BALL_INIT_POSE:
-      init_ball_pose = np.array([self.np_random.uniform(low=-1.3, high=1.3), # x
-                                 self.np_random.uniform(low=-1.3, high=0)])  # y
+
+      init_ball_pose = np.array([self.np_random.uniform(low=-1.2, high=1.2), # x
+                                 self.np_random.uniform(low=-1.2, high=1.2)])  # y
     else:
       init_ball_pose = np.array([-0.5, 0.2])
 
@@ -115,19 +116,19 @@ class BilliardEnv(gym.Env):
 
     return self.state, reward, final, info
 
-  def render(self, mode='human', rendered=True):
+  def render(self, mode='human'):
     import pygame
 
-    if self.screen is None and rendered:
+    if self.screen is None and mode=='human':
       self.screen = pygame.display.set_mode((self.params.DISPLAY_SIZE[0], self.params.DISPLAY_SIZE[1]), 0, 32)
       pygame.display.set_caption('Billiard')
       self.clock = pygame.time.Clock()
 
     if self.state is None: return None
 
-    if rendered:
+    if mode=='human':
       self.screen.fill(pygame.color.THECOLORS["white"])
-    else:
+    elif mode=='rgb_array':
       capture = pygame.Surface((self.params.DISPLAY_SIZE[0], self.params.DISPLAY_SIZE[1]))
 
     # Draw holes. This are just drawn, but are not simulated.
@@ -135,12 +136,12 @@ class BilliardEnv(gym.Env):
       # To world transform (The - is to take into account pygame coordinate system)
       pose = -hole['pose'] + self.physics_eng.tw_transform
 
-      if rendered:
+      if mode=='human':
         pygame.draw.circle(self.screen,
                            (255, 0, 0),
                            [int(pose[0] * self.params.PPM), int(pose[1] * self.params.PPM)],
                            int(hole['radius'] * self.params.PPM))
-      else:
+      elif mode=='rgb_array':
         pygame.draw.circle(capture,
                            (255, 0, 0),
                            [int(pose[0] * self.params.PPM), int(pose[1] * self.params.PPM)],
@@ -151,22 +152,27 @@ class BilliardEnv(gym.Env):
       color = [0, 0, 0]
       obj_name = body.userData['name']
       if obj_name == 'ball0':
-        color = [0, 0, 180, 255]
+        color = [0, 0, 255]
       elif obj_name in ['link0', 'link1']:
         color = [100, 100, 100]
       elif 'wall' in obj_name:
         color = [150, 150, 150]
 
       for fixture in body.fixtures:
-        if rendered:
+        if mode=='human':
           fixture.shape.draw(body, self.screen, self.params, color)
-        else:
-          fixture.shape.draw(body, capture, self.params, color)
+        elif mode=='rgb_array':
+          obj_name = body.userData['name']
+          if self.params.SHOW_ARM_IN_ARRAY:
+            fixture.shape.draw(body, capture, self.params, color)
+          else:
+            if not obj_name in ['link0', 'link1']:
+              fixture.shape.draw(body, capture, self.params, color)
 
-    if rendered:
+    if mode=='human':
       pygame.display.flip()
       self.clock.tick(self.params.TARGET_FPS)
       return self.screen
-    else:
+    elif mode=='rgb_array':
       imgdata = pygame.surfarray.array3d(capture)
       return imgdata.swapaxes(0,1)

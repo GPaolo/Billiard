@@ -6,7 +6,7 @@ class Params(object):
   def __init__(self):
     self.TABLE_SIZE = np.array([3., 3.])
     self.TABLE_CENTER = np.array(self.TABLE_SIZE / 2)
-    self.DISPLAY_SIZE = (600, 600)
+    self.DISPLAY_SIZE = (300, 300)
     self.TO_PIXEL = np.array(self.DISPLAY_SIZE) / self.TABLE_SIZE
 
     self.LINK_0_LENGTH = 1.
@@ -15,7 +15,7 @@ class Params(object):
     self.LINK_FRICTION = .9
     self.LINK_THICKNESS = 0.05
 
-    self.BALL_RADIUS = .1
+    self.BALL_RADIUS = .2
     self.BALL_ELASTICITY = .7
     self.BALL_FRICTION = .9
 
@@ -31,10 +31,12 @@ class Params(object):
     self.TARGET_FPS = 60
     self.TIME_STEP = 1.0 / self.TARGET_FPS
 
-    self.MAX_ENV_STEPS = 500
+    self.MAX_ENV_STEPS = 300
 
     self.TORQUE_CONTROL = False
     self.TEST = True
 
     self.RANDOM_ARM_INIT_POSE = False
     self.RANDOM_BALL_INIT_POSE = False
+
+    self.SHOW_ARM_IN_ARRAY = False

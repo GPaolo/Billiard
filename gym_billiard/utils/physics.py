@@ -5,7 +5,6 @@ from gym_billiard.utils import parameters
 from pprint import pprint
 
 
-# TODO implement different initial arm positions
 # TODO implement checks on balls spawning positions (not in holes or on arm or overlapped'
 
 # Extend polygon shape with drawing function
@@ -35,7 +34,7 @@ class PhysicsSim(object):
     else:
       self.params = params
 
-    pprint('Parameters: {}'.format(vars(self.params)))
+    # pprint('Parameters: {}'.format(vars(self.params)))
 
     # Create physic simulator
     self.world = b2.b2World(gravity=(0, 0), doSleep=True)
@@ -220,7 +219,7 @@ class PhysicsSim(object):
       speed = value
 
     # Limit max joint speed
-    self.arm[joint].motorSpeed = np.sign(speed)*min(1., np.abs(speed))
+    self.arm[joint].motorSpeed = np.sign(speed)*min(1, np.abs(speed))
 
   def step(self):
     '''
