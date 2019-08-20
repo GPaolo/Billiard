@@ -1,6 +1,6 @@
 import gym
 import gym_billiard
-env = gym.make('Billiard-v0')
+env = gym.make('BilliardHard-v0')
 import numpy as np
 import matplotlib.pyplot as plt
 from math import cos
@@ -29,3 +29,6 @@ for i in range(10):
     plt.imshow(img, interpolation='nearest')
     plt.draw()
     obs, reward, done, info = env.step(action)
+    if done:
+      break
+  print(info)
