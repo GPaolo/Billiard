@@ -7,6 +7,13 @@ import gym_billiard
 import os
 
 def generate_random_states(filepath, filename, samples=50000):
+  """
+  This function generates random images of possible environment states.
+  :param filepath: Path were to save the images
+  :param filename: Name of the images collection
+  :param samples: Number of images to generate
+  :return:
+  """
   assert os.path.exists(filepath), "Path {} does not exist.".format(filepath)
 
   images = []

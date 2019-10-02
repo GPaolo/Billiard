@@ -1,9 +1,14 @@
 import numpy as np
 # Params class
 class Params(object):
-  # Define simulation parameters (Might move them to a param file)
-  # The world is centered at the lower left corner of the table
+  """
+  Define simulation parameters.
+  The world is centered at the lower left corner of the table.
+  """
   def __init__(self):
+    """
+    Constructor
+    """
     self.TABLE_SIZE = np.array([3., 3.])
     self.TABLE_CENTER = np.array(self.TABLE_SIZE / 2)
     self.DISPLAY_SIZE = (300, 300)

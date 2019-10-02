@@ -1,0 +1,204 @@
+\hypertarget{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env}{}\doxysection{gym\+\_\+billiard.\+envs.\+billiard\+\_\+env.\+Billiard\+Env Class Reference}
+\label{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env}\index{gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}}
+
+
+Inheritance diagram for gym\+\_\+billiard.\+envs.\+billiard\+\_\+env.\+Billiard\+Env\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=203pt]{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for gym\+\_\+billiard.\+envs.\+billiard\+\_\+env.\+Billiard\+Env\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=203pt]{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_a0fdd7938ee1ca9f6e451e40166d818ad}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, \mbox{\hyperlink{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_a4fe2b1339f7a74dd8f97e2ba5821c7da}{seed}}=None, max\+\_\+steps=500)
+\item 
+def \mbox{\hyperlink{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_a4fe2b1339f7a74dd8f97e2ba5821c7da}{seed}} (self, seed=None)
+\item 
+def \mbox{\hyperlink{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_ad817208b88af88c6710dc908c12f881d}{reset}} (self)
+\item 
+def \mbox{\hyperlink{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_a3b23ecb0513a283277b3a4bf85934d69}{step}} (self, action)
+\item 
+def \mbox{\hyperlink{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_af0eb772c625c5fa00a31de1ab1ddbf46}{render}} (self, mode=\textquotesingle{}human\textquotesingle{})
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_a79e0cb5f200ae2fcaa563110d8afb0e6}{screen}}
+\item 
+\mbox{\hyperlink{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_a3f97d711e6395051fc5222ea44afa977}{params}}
+\item 
+\mbox{\hyperlink{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_a76b96206e67f7f718713f81d168f31b4}{physics\+\_\+eng}}
+\item 
+\mbox{\hyperlink{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_ab87e1866cd67bdfbca42717b59d93afd}{observation\+\_\+space}}
+\begin{DoxyCompactList}\small\item\em Ball XY positions can be between -\/1.\+5 and 1.\+5. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_ac6a3a466eff893acec8fc8781170097a}{action\+\_\+space}}
+\begin{DoxyCompactList}\small\item\em Joint commands can be between \mbox{[}-\/1, 1\mbox{]}. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_ac2fb47a742e912ba534c93989efecbee}{steps}}
+\item 
+\mbox{\hyperlink{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_aee600220486c1cac207fc3d464535d51}{state}}
+\item 
+\mbox{\hyperlink{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_aa6beadf4a5491a593ef9cd1bc5dd9519}{clock}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+dictionary \mbox{\hyperlink{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_a02e3e0c03adee6fb7ccc0d1145608ad1}{metadata}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}State is composed of:
+s = ([ball_x, ball_y], [joint0_angle, joint1_angle], [joint0_speed, joint1_speed])
+
+The values that these components can take are:
+ball_x, ball_y -> [-1.5, 1.5]
+joint0_angle -> [-pi/2, pi/2]
+joint1_angle -> [-pi, pi]
+joint0_speed, joint1_speed -> [-50, 50]
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_a0fdd7938ee1ca9f6e451e40166d818ad}\label{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_a0fdd7938ee1ca9f6e451e40166d818ad}} 
+\index{gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily def gym\+\_\+billiard.\+envs.\+billiard\+\_\+env.\+Billiard\+Env.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{seed = {\ttfamily None},  }\item[{}]{max\+\_\+steps = {\ttfamily 500} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Constructor
+:param seed: the random seed for the environment
+:param max_steps: the maximum number of steps the episode lasts
+:return:
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_af0eb772c625c5fa00a31de1ab1ddbf46}\label{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_af0eb772c625c5fa00a31de1ab1ddbf46}} 
+\index{gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}!render@{render}}
+\index{render@{render}!gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}}
+\doxysubsubsection{\texorpdfstring{render()}{render()}}
+{\footnotesize\ttfamily def gym\+\_\+billiard.\+envs.\+billiard\+\_\+env.\+Billiard\+Env.\+render (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{mode = {\ttfamily \textquotesingle{}human\textquotesingle{}} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Rendering function
+:param mode: if human, renders on screen. If rgb_array, renders as numpy array
+:return: screen if mode=human, array if mode=rgb_array
+\end{DoxyVerb}
+ \mbox{\Hypertarget{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_ad817208b88af88c6710dc908c12f881d}\label{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_ad817208b88af88c6710dc908c12f881d}} 
+\index{gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}!reset@{reset}}
+\index{reset@{reset}!gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}}
+\doxysubsubsection{\texorpdfstring{reset()}{reset()}}
+{\footnotesize\ttfamily def gym\+\_\+billiard.\+envs.\+billiard\+\_\+env.\+Billiard\+Env.\+reset (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Function to reset the environment.
+- If param RANDOM_BALL_INIT_POSE is set, the ball appears in a random pose, otherwise it will appear at [-0.5, 0.2]
+- If param RANDOM_ARM_INIT_POSE is set, the arm joint positions will be set randomly, otherwise they will have [0, 0]
+:return: Initial observation
+\end{DoxyVerb}
+ \mbox{\Hypertarget{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_a4fe2b1339f7a74dd8f97e2ba5821c7da}\label{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_a4fe2b1339f7a74dd8f97e2ba5821c7da}} 
+\index{gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}!seed@{seed}}
+\index{seed@{seed}!gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}}
+\doxysubsubsection{\texorpdfstring{seed()}{seed()}}
+{\footnotesize\ttfamily def gym\+\_\+billiard.\+envs.\+billiard\+\_\+env.\+Billiard\+Env.\+seed (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{seed = {\ttfamily None} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Function to seed the environment
+:param seed: The random seed
+:return: [seed]
+\end{DoxyVerb}
+ \mbox{\Hypertarget{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_a3b23ecb0513a283277b3a4bf85934d69}\label{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_a3b23ecb0513a283277b3a4bf85934d69}} 
+\index{gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}!step@{step}}
+\index{step@{step}!gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}}
+\doxysubsubsection{\texorpdfstring{step()}{step()}}
+{\footnotesize\ttfamily def gym\+\_\+billiard.\+envs.\+billiard\+\_\+env.\+Billiard\+Env.\+step (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{action }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Performs an environment step.
+:param action: Arm Motor commands. Can be either torques or velocity, according to TORQUE_CONTROL parameter
+:return: state, reward, final, info
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_ac6a3a466eff893acec8fc8781170097a}\label{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_ac6a3a466eff893acec8fc8781170097a}} 
+\index{gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}!action\_space@{action\_space}}
+\index{action\_space@{action\_space}!gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}}
+\doxysubsubsection{\texorpdfstring{action\_space}{action\_space}}
+{\footnotesize\ttfamily gym\+\_\+billiard.\+envs.\+billiard\+\_\+env.\+Billiard\+Env.\+action\+\_\+space}
+
+
+
+Joint commands can be between \mbox{[}-\/1, 1\mbox{]}. 
+
+\mbox{\Hypertarget{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_aa6beadf4a5491a593ef9cd1bc5dd9519}\label{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_aa6beadf4a5491a593ef9cd1bc5dd9519}} 
+\index{gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}!clock@{clock}}
+\index{clock@{clock}!gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}}
+\doxysubsubsection{\texorpdfstring{clock}{clock}}
+{\footnotesize\ttfamily gym\+\_\+billiard.\+envs.\+billiard\+\_\+env.\+Billiard\+Env.\+clock}
+
+\mbox{\Hypertarget{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_a02e3e0c03adee6fb7ccc0d1145608ad1}\label{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_a02e3e0c03adee6fb7ccc0d1145608ad1}} 
+\index{gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}!metadata@{metadata}}
+\index{metadata@{metadata}!gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}}
+\doxysubsubsection{\texorpdfstring{metadata}{metadata}}
+{\footnotesize\ttfamily dictionary gym\+\_\+billiard.\+envs.\+billiard\+\_\+env.\+Billiard\+Env.\+metadata\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=  \{\textcolor{stringliteral}{'render.modes'}: [\textcolor{stringliteral}{'human'}],}
+\DoxyCodeLine{              \textcolor{stringliteral}{'video.frames\_per\_second'}: 15}
+\DoxyCodeLine{              \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_ab87e1866cd67bdfbca42717b59d93afd}\label{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_ab87e1866cd67bdfbca42717b59d93afd}} 
+\index{gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}!observation\_space@{observation\_space}}
+\index{observation\_space@{observation\_space}!gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}}
+\doxysubsubsection{\texorpdfstring{observation\_space}{observation\_space}}
+{\footnotesize\ttfamily gym\+\_\+billiard.\+envs.\+billiard\+\_\+env.\+Billiard\+Env.\+observation\+\_\+space}
+
+
+
+Ball XY positions can be between -\/1.\+5 and 1.\+5. 
+
+Arm joint can have positons\+: Joint 0\+: \mbox{[}-\/Pi/2, Pi/2\mbox{]} Joint 1\+: \mbox{[}-\/Pi, Pi\mbox{]} \mbox{\Hypertarget{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_a3f97d711e6395051fc5222ea44afa977}\label{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_a3f97d711e6395051fc5222ea44afa977}} 
+\index{gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}!params@{params}}
+\index{params@{params}!gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}}
+\doxysubsubsection{\texorpdfstring{params}{params}}
+{\footnotesize\ttfamily gym\+\_\+billiard.\+envs.\+billiard\+\_\+env.\+Billiard\+Env.\+params}
+
+\mbox{\Hypertarget{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_a76b96206e67f7f718713f81d168f31b4}\label{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_a76b96206e67f7f718713f81d168f31b4}} 
+\index{gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}!physics\_eng@{physics\_eng}}
+\index{physics\_eng@{physics\_eng}!gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}}
+\doxysubsubsection{\texorpdfstring{physics\_eng}{physics\_eng}}
+{\footnotesize\ttfamily gym\+\_\+billiard.\+envs.\+billiard\+\_\+env.\+Billiard\+Env.\+physics\+\_\+eng}
+
+\mbox{\Hypertarget{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_a79e0cb5f200ae2fcaa563110d8afb0e6}\label{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_a79e0cb5f200ae2fcaa563110d8afb0e6}} 
+\index{gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}!screen@{screen}}
+\index{screen@{screen}!gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}}
+\doxysubsubsection{\texorpdfstring{screen}{screen}}
+{\footnotesize\ttfamily gym\+\_\+billiard.\+envs.\+billiard\+\_\+env.\+Billiard\+Env.\+screen}
+
+\mbox{\Hypertarget{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_aee600220486c1cac207fc3d464535d51}\label{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_aee600220486c1cac207fc3d464535d51}} 
+\index{gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}!state@{state}}
+\index{state@{state}!gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}}
+\doxysubsubsection{\texorpdfstring{state}{state}}
+{\footnotesize\ttfamily gym\+\_\+billiard.\+envs.\+billiard\+\_\+env.\+Billiard\+Env.\+state}
+
+\mbox{\Hypertarget{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_ac2fb47a742e912ba534c93989efecbee}\label{classgym__billiard_1_1envs_1_1billiard__env_1_1_billiard_env_ac2fb47a742e912ba534c93989efecbee}} 
+\index{gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}!steps@{steps}}
+\index{steps@{steps}!gym\_billiard.envs.billiard\_env.BilliardEnv@{gym\_billiard.envs.billiard\_env.BilliardEnv}}
+\doxysubsubsection{\texorpdfstring{steps}{steps}}
+{\footnotesize\ttfamily gym\+\_\+billiard.\+envs.\+billiard\+\_\+env.\+Billiard\+Env.\+steps}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+gym\+\_\+billiard/envs/\mbox{\hyperlink{billiard__env_8py}{billiard\+\_\+env.\+py}}\end{DoxyCompactItemize}

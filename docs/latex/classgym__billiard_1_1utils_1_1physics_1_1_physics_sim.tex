@@ -1,0 +1,207 @@
+\hypertarget{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim}{}\doxysection{gym\+\_\+billiard.\+utils.\+physics.\+Physics\+Sim Class Reference}
+\label{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim}\index{gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}}
+
+
+Inheritance diagram for gym\+\_\+billiard.\+utils.\+physics.\+Physics\+Sim\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=209pt]{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for gym\+\_\+billiard.\+utils.\+physics.\+Physics\+Sim\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=209pt]{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_ac586a4da4668eac0e6fcde5ba5ed3559}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, balls\+\_\+pose=\mbox{[}\mbox{[}0, 0\mbox{]}\mbox{]}, arm\+\_\+position=None, \mbox{\hyperlink{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a262050a4a2aff10442f5152d0e2b1dbe}{params}}=None)
+\item 
+def \mbox{\hyperlink{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a6a2efc8883a284282e7a650a6c5174d2}{reset}} (self, balls\+\_\+pose, arm\+\_\+position)
+\item 
+def \mbox{\hyperlink{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a2717e13f8de669ec896ad46d2b86256a}{move\+\_\+joint}} (self, joint, value)
+\item 
+def \mbox{\hyperlink{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a89d6a525fc31e135eef5be650f8a5488}{step}} (self)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a262050a4a2aff10442f5152d0e2b1dbe}{params}}
+\item 
+\mbox{\hyperlink{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a704ccf4d7d5e63f71285c1d3a7821a16}{world}}
+\begin{DoxyCompactList}\small\item\em Physic simulator. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a1a4669406f674a0636989f78523bef75}{dt}}
+\item 
+\mbox{\hyperlink{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a0cb3d9c7b93d07784fee44df5ee75243}{vel\+\_\+iter}}
+\item 
+\mbox{\hyperlink{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a12305bd717de6159d3010fbe0c49a115}{pos\+\_\+iter}}
+\item 
+\mbox{\hyperlink{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a8fa2c6c918a1ee3923df081de5e083c9}{walls}}
+\begin{DoxyCompactList}\small\item\em Walls in world RF. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a257fa5445bb7f78a62ebb181c09d1b66}{wt\+\_\+transform}}
+\begin{DoxyCompactList}\small\item\em world RF -\/$>$ table RF \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a93d26c5236490993050f4bb3b3f4728a}{tw\+\_\+transform}}
+\begin{DoxyCompactList}\small\item\em table RF -\/$>$ world RF \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a8800e57abbc62bdd1a7b479ed2041fdb}{balls}}
+\begin{DoxyCompactList}\small\item\em List of balls in simulation. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_ab883a798bee513d5b0ee2070bc9fd237}{arm}}
+\begin{DoxyCompactList}\small\item\em Arm definition with links and joints. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a5e81a4e3c7b65b408d01b5edebaaa3aa}{holes}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Physics simulator
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_ac586a4da4668eac0e6fcde5ba5ed3559}\label{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_ac586a4da4668eac0e6fcde5ba5ed3559}} 
+\index{gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily def gym\+\_\+billiard.\+utils.\+physics.\+Physics\+Sim.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{balls\+\_\+pose = {\ttfamily \mbox{[}\mbox{[}0,~0\mbox{]}\mbox{]}},  }\item[{}]{arm\+\_\+position = {\ttfamily None},  }\item[{}]{params = {\ttfamily None} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Constructor
+:param balls_pose: Initial ball poses. Is a list of the ball poses [ball0, ball1, ...]
+:param arm_position: Initial arm position
+:param params: Parameters
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a2717e13f8de669ec896ad46d2b86256a}\label{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a2717e13f8de669ec896ad46d2b86256a}} 
+\index{gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}!move\_joint@{move\_joint}}
+\index{move\_joint@{move\_joint}!gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}}
+\doxysubsubsection{\texorpdfstring{move\_joint()}{move\_joint()}}
+{\footnotesize\ttfamily def gym\+\_\+billiard.\+utils.\+physics.\+Physics\+Sim.\+move\+\_\+joint (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{joint,  }\item[{}]{value }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Move the given joint of the given value
+:param joint: Joint to move
+:param value: Speed or torque to add to the joint
+:return:
+\end{DoxyVerb}
+ \mbox{\Hypertarget{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a6a2efc8883a284282e7a650a6c5174d2}\label{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a6a2efc8883a284282e7a650a6c5174d2}} 
+\index{gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}!reset@{reset}}
+\index{reset@{reset}!gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}}
+\doxysubsubsection{\texorpdfstring{reset()}{reset()}}
+{\footnotesize\ttfamily def gym\+\_\+billiard.\+utils.\+physics.\+Physics\+Sim.\+reset (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{balls\+\_\+pose,  }\item[{}]{arm\+\_\+position }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Reset the world to the given arm and balls poses
+:param balls_pose:
+:param arm_position:
+:return:
+\end{DoxyVerb}
+ \mbox{\Hypertarget{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a89d6a525fc31e135eef5be650f8a5488}\label{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a89d6a525fc31e135eef5be650f8a5488}} 
+\index{gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}!step@{step}}
+\index{step@{step}!gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}}
+\doxysubsubsection{\texorpdfstring{step()}{step()}}
+{\footnotesize\ttfamily def gym\+\_\+billiard.\+utils.\+physics.\+Physics\+Sim.\+step (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Performs a simulator step
+:return:
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_ab883a798bee513d5b0ee2070bc9fd237}\label{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_ab883a798bee513d5b0ee2070bc9fd237}} 
+\index{gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}!arm@{arm}}
+\index{arm@{arm}!gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}}
+\doxysubsubsection{\texorpdfstring{arm}{arm}}
+{\footnotesize\ttfamily gym\+\_\+billiard.\+utils.\+physics.\+Physics\+Sim.\+arm}
+
+
+
+Arm definition with links and joints. 
+
+\mbox{\Hypertarget{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a8800e57abbc62bdd1a7b479ed2041fdb}\label{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a8800e57abbc62bdd1a7b479ed2041fdb}} 
+\index{gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}!balls@{balls}}
+\index{balls@{balls}!gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}}
+\doxysubsubsection{\texorpdfstring{balls}{balls}}
+{\footnotesize\ttfamily gym\+\_\+billiard.\+utils.\+physics.\+Physics\+Sim.\+balls}
+
+
+
+List of balls in simulation. 
+
+\mbox{\Hypertarget{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a1a4669406f674a0636989f78523bef75}\label{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a1a4669406f674a0636989f78523bef75}} 
+\index{gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}!dt@{dt}}
+\index{dt@{dt}!gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}}
+\doxysubsubsection{\texorpdfstring{dt}{dt}}
+{\footnotesize\ttfamily gym\+\_\+billiard.\+utils.\+physics.\+Physics\+Sim.\+dt}
+
+\mbox{\Hypertarget{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a5e81a4e3c7b65b408d01b5edebaaa3aa}\label{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a5e81a4e3c7b65b408d01b5edebaaa3aa}} 
+\index{gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}!holes@{holes}}
+\index{holes@{holes}!gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}}
+\doxysubsubsection{\texorpdfstring{holes}{holes}}
+{\footnotesize\ttfamily gym\+\_\+billiard.\+utils.\+physics.\+Physics\+Sim.\+holes}
+
+\mbox{\Hypertarget{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a262050a4a2aff10442f5152d0e2b1dbe}\label{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a262050a4a2aff10442f5152d0e2b1dbe}} 
+\index{gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}!params@{params}}
+\index{params@{params}!gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}}
+\doxysubsubsection{\texorpdfstring{params}{params}}
+{\footnotesize\ttfamily gym\+\_\+billiard.\+utils.\+physics.\+Physics\+Sim.\+params}
+
+\mbox{\Hypertarget{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a12305bd717de6159d3010fbe0c49a115}\label{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a12305bd717de6159d3010fbe0c49a115}} 
+\index{gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}!pos\_iter@{pos\_iter}}
+\index{pos\_iter@{pos\_iter}!gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}}
+\doxysubsubsection{\texorpdfstring{pos\_iter}{pos\_iter}}
+{\footnotesize\ttfamily gym\+\_\+billiard.\+utils.\+physics.\+Physics\+Sim.\+pos\+\_\+iter}
+
+\mbox{\Hypertarget{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a93d26c5236490993050f4bb3b3f4728a}\label{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a93d26c5236490993050f4bb3b3f4728a}} 
+\index{gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}!tw\_transform@{tw\_transform}}
+\index{tw\_transform@{tw\_transform}!gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}}
+\doxysubsubsection{\texorpdfstring{tw\_transform}{tw\_transform}}
+{\footnotesize\ttfamily gym\+\_\+billiard.\+utils.\+physics.\+Physics\+Sim.\+tw\+\_\+transform}
+
+
+
+table RF -\/$>$ world RF 
+
+\mbox{\Hypertarget{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a0cb3d9c7b93d07784fee44df5ee75243}\label{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a0cb3d9c7b93d07784fee44df5ee75243}} 
+\index{gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}!vel\_iter@{vel\_iter}}
+\index{vel\_iter@{vel\_iter}!gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}}
+\doxysubsubsection{\texorpdfstring{vel\_iter}{vel\_iter}}
+{\footnotesize\ttfamily gym\+\_\+billiard.\+utils.\+physics.\+Physics\+Sim.\+vel\+\_\+iter}
+
+\mbox{\Hypertarget{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a8fa2c6c918a1ee3923df081de5e083c9}\label{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a8fa2c6c918a1ee3923df081de5e083c9}} 
+\index{gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}!walls@{walls}}
+\index{walls@{walls}!gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}}
+\doxysubsubsection{\texorpdfstring{walls}{walls}}
+{\footnotesize\ttfamily gym\+\_\+billiard.\+utils.\+physics.\+Physics\+Sim.\+walls}
+
+
+
+Walls in world RF. 
+
+\mbox{\Hypertarget{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a704ccf4d7d5e63f71285c1d3a7821a16}\label{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a704ccf4d7d5e63f71285c1d3a7821a16}} 
+\index{gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}!world@{world}}
+\index{world@{world}!gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}}
+\doxysubsubsection{\texorpdfstring{world}{world}}
+{\footnotesize\ttfamily gym\+\_\+billiard.\+utils.\+physics.\+Physics\+Sim.\+world}
+
+
+
+Physic simulator. 
+
+\mbox{\Hypertarget{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a257fa5445bb7f78a62ebb181c09d1b66}\label{classgym__billiard_1_1utils_1_1physics_1_1_physics_sim_a257fa5445bb7f78a62ebb181c09d1b66}} 
+\index{gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}!wt\_transform@{wt\_transform}}
+\index{wt\_transform@{wt\_transform}!gym\_billiard.utils.physics.PhysicsSim@{gym\_billiard.utils.physics.PhysicsSim}}
+\doxysubsubsection{\texorpdfstring{wt\_transform}{wt\_transform}}
+{\footnotesize\ttfamily gym\+\_\+billiard.\+utils.\+physics.\+Physics\+Sim.\+wt\+\_\+transform}
+
+
+
+world RF -\/$>$ table RF 
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+gym\+\_\+billiard/utils/\mbox{\hyperlink{physics_8py}{physics.\+py}}\end{DoxyCompactItemize}
