@@ -6,16 +6,32 @@ from gym_billiard.utils import parameters
 
 # TODO implement checks on balls spawning positions (not in holes or on arm or overlapped'
 
-# Extend polygon shape with drawing function
 def draw_polygon(polygon, body, screen, params, color):
+  """
+  Function used to extend polygon shape with drawing function
+  :param polygon: self
+  :param body: body to draw
+  :param screen: screen where to draw
+  :param params:
+  :param color:
+  :return:
+  """
   vertices = [(body.transform * v) * params.PPM for v in polygon.vertices]
   vertices = [(v[0], params.DISPLAY_SIZE[1] - v[1]) for v in vertices]
   pygame.draw.polygon(screen, color, vertices)
 
 b2.b2.polygonShape.draw = draw_polygon
 
-# Extend circle shape with drawing function
 def my_draw_circle(circle, body, screen, params, color):
+  """
+  Function used to extend circle shape with drawing function
+  :param circle: self
+  :param body: body to draw
+  :param screen: screen where to draw
+  :param params:
+  :param color:
+  :return:
+  """
   position = body.transform * circle.pos * params.PPM
   position = (position[0], params.DISPLAY_SIZE[1] - position[1])
   pygame.draw.circle(screen,
@@ -26,16 +42,22 @@ def my_draw_circle(circle, body, screen, params, color):
 b2.b2.circleShape.draw = my_draw_circle
 
 class PhysicsSim(object):
-
+  """
+  Physics simulator
+  """
   def __init__(self, balls_pose=[[0, 0]], arm_position=None, params=None):
+    """
+    Constructor
+    :param balls_pose: Initial ball poses. Is a list of the ball poses [ball0, ball1, ...]
+    :param arm_position: Initial arm position
+    :param params: Parameters
+    """
     if params is None:
       self.params = parameters.Params()
     else:
       self.params = params
 
-    # pprint('Parameters: {}'.format(vars(self.params)))
-
-    # Create physic simulator
+    ## Physic simulator
     self.world = b2.b2World(gravity=(0, 0), doSleep=True)
     self.dt = self.params.TIME_STEP
     self.vel_iter = self.params.VEL_ITER
@@ -46,11 +68,11 @@ class PhysicsSim(object):
     self._create_holes()
 
   def _create_table(self):
-    '''
+    """
     Creates the walls of the table
     :return:
-    '''
-    # Create walls in world RF
+    """
+    ## Walls in world RF
     left_wall_body = self.world.CreateStaticBody(position=(0, self.params.TABLE_CENTER[1]),
                                                  userData={'name': 'left wall'},
                                                  shapes=b2.b2PolygonShape(box=(self.params.WALL_THICKNESS/2,
@@ -72,20 +94,22 @@ class PhysicsSim(object):
 
     self.walls = [left_wall_body, upper_wall_body, right_wall_body, bottom_wall_body]
 
-    # Create coordinate transform
-    self.wt_transform = -self.params.TABLE_CENTER # world RF -> table RF
-    self.tw_transform = self.params.TABLE_CENTER # table RF -> world RF
+    ## world RF -> table RF
+    self.wt_transform = -self.params.TABLE_CENTER
+    ## table RF -> world RF
+    self.tw_transform = self.params.TABLE_CENTER
 
   def _create_balls(self, balls_pose):
-    '''
+    """
     Creates the balls in the simulation at the given positions
     :param balls_pose: Initial pose of the ball in table RF
     :return:
-    '''
+    """
+    ## List of balls in simulation
     self.balls = []
 
     for idx, pose in enumerate(balls_pose):
-      pose = pose + self.tw_transform # move balls in world RF
+      pose = pose + self.tw_transform ## move balls in world RF
       ball = self.world.CreateDynamicBody(position=pose,
                                           bullet=True,
                                           allowSleep=True,
@@ -99,11 +123,11 @@ class PhysicsSim(object):
       self.balls.append(ball)
 
   def _calculate_arm_pose(self, arm_position=None):
-    '''
+    """
     This function calculates the arm initial position according to the joints angles in randiants
-    :param arm_position:
+    :param arm_position: joint arm position in radians. The zero is at the vertical position
     :return: link0 and link1 position.
-    '''
+    """
     pose = {'link0_center': np.array((self.params.TABLE_CENTER[0], self.params.LINK_0_LENGTH/2)),
             'link1_center': np.array((self.params.TABLE_CENTER[0], self.params.LINK_0_LENGTH - .1 + self.params.LINK_1_LENGTH / 2)),
             'joint01_center': np.array([self.params.TABLE_CENTER[0], self.params.LINK_0_LENGTH]),
@@ -139,11 +163,11 @@ class PhysicsSim(object):
     return pose
 
   def _create_robotarm(self, arm_position=None):
-    '''
+    """
     Creates the robotic arm.
-    :param angular_position: Initial angular position
+    :param arm_position: Initial angular position
     :return:
-    '''
+    """
     arm_pose = self._calculate_arm_pose(arm_position)
     link0 = self.world.CreateDynamicBody(position=arm_pose['link0_center'],
                                          angle=arm_pose['link0_angle'],
@@ -190,27 +214,41 @@ class PhysicsSim(object):
                                              motorSpeed=0.0,
                                              enableMotor=True)
 
+    ## Arm definition with links and joints
     self.arm = {'link0': link0, 'link1': link1, 'joint01': joint01, 'jointW0': jointW0}
 
   def _create_holes(self):
-    '''
+    """
     Defines the holes in table RF. This ones are not simulated, but just defined as a list of dicts.
     :return:
-    '''
+    """
+    # Holes in simulation. Represented as list of dicts.
     self.holes = [{'pose': np.array([-self.params.TABLE_SIZE[0] / 2, self.params.TABLE_SIZE[1] / 2]), 'radius': .4},
                   {'pose': np.array([self.params.TABLE_SIZE[0] / 2, self.params.TABLE_SIZE[1] / 2]), 'radius': .4}]
 
   def reset(self, balls_pose, arm_position):
-    # Destroy all the bodies
+    """
+    Reset the world to the given arm and balls poses
+    :param balls_pose:
+    :param arm_position:
+    :return:
+    """
+    ## Destroy all the bodies
     for body in self.world.bodies:
       if body.type is b2.b2.dynamicBody:
         self.world.DestroyBody(body)
 
-    # Recreate the balls and the arm
+    ## Recreate the balls and the arm
     self._create_balls(balls_pose)
     self._create_robotarm(arm_position)
 
   def move_joint(self, joint, value):
+    """
+    Move the given joint of the given value
+    :param joint: Joint to move
+    :param value: Speed or torque to add to the joint
+    :return:
+    """
     speed = self.arm[joint].motorSpeed
     if self.params.TORQUE_CONTROL:
       speed = speed + value * self.dt
