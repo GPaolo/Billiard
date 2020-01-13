@@ -1,6 +1,3 @@
-import gym
-import pytest
-import numpy as np
 from gym_billiard.utils import physics
 import Box2D as b2
 
@@ -15,7 +12,7 @@ def test_create_table():
   del physics_eng
 
 def test_create_ball():
-  physics_eng = physics.PhysicsSim(balls_pose=[[1,2]])
+  physics_eng = physics.PhysicsSim(balls_pose=[[1, 2]])
   assert len(physics_eng.balls) == 1, 'Not enough balls'
   assert physics_eng.balls[0].position + physics_eng.wt_transform == b2.b2Vec2([1, 2]), 'Wrong ball pose'
 

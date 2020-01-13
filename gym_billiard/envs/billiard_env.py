@@ -52,11 +52,13 @@ class BilliardEnv(gym.Env):
     self.np_random, seed = seeding.np_random(seed)
     return [seed]
 
-  def reset(self):
+  def reset(self, desired_ball_pose=None):
     if self.params.RANDOM_BALL_INIT_POSE:
 
       init_ball_pose = np.array([self.np_random.uniform(low=-1.2, high=1.2), # x
                                  self.np_random.uniform(low=-1.2, high=1.2)])  # y
+    elif desired_ball_pose is not None:
+      init_ball_pose = np.array(desired_ball_pose)
     else:
       init_ball_pose = np.array([-0.5, 0.2])
 
@@ -116,7 +118,7 @@ class BilliardEnv(gym.Env):
 
     return self.state, reward, final, info
 
-  def render(self, mode='human'):
+  def render(self, mode='human', **kwargs):
     import pygame
 
     if self.screen is None and mode=='human':

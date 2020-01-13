@@ -2,7 +2,6 @@ import Box2D as b2
 import pygame
 import numpy as np
 from gym_billiard.utils import parameters
-from pprint import pprint
 
 
 # TODO implement checks on balls spawning positions (not in holes or on arm or overlapped'
@@ -219,13 +218,13 @@ class PhysicsSim(object):
       speed = value
 
     # Limit max joint speed
-    self.arm[joint].motorSpeed = np.sign(speed)*min(1, np.abs(speed))
+    self.arm[joint].motorSpeed = np.float(np.sign(speed)*min(1, np.abs(speed)))
 
   def step(self):
-    '''
+    """
     Performs a simulator step
     :return:
-    '''
+    """
     self.world.Step(self.dt, self.vel_iter, self.pos_iter)
     self.world.ClearForces()
 

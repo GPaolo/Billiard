@@ -3,7 +3,6 @@
 
 import numpy as np
 import gym
-import gym_billiard
 import os
 
 def generate_random_states(filepath, filename, samples=50000):
