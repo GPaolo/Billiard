@@ -1,3 +1,6 @@
+# Created by Giuseppe Paolo 
+# Date: 21/12/18
+
 import gym
 from gym import error, spaces, utils
 from gym.utils import seeding
