@@ -1,7 +1,4 @@
-.idea/
-.venv/
-*__pycache__/
-dist/
-*.egg-info/
-*pytest_cache/
+.idea
+.venv
 Pipfile
+nohup.out

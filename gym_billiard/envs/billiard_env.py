@@ -6,6 +6,7 @@ from gym import error, spaces, utils
 from gym.utils import seeding
 import numpy as np
 from gym_billiard.utils import physics, parameters
+import pygame
 
 # TODO implement logger
 
@@ -41,17 +42,18 @@ class BilliardEnv(gym.Env):
     self.physics_eng = physics.PhysicsSim()
 
     ## Ball XY positions can be between -1.5 and 1.5
-    ball_os = spaces.Box(low=np.array([-self.params.TABLE_SIZE[0] / 2., -self.params.TABLE_SIZE[1] / 2.]),
-                         high=np.array([self.params.TABLE_SIZE[0] / 2., self.params.TABLE_SIZE[1] / 2.]),
-                         dtype=np.float32)
-
     ## Arm joint can have positons:
     # Joint 0: [-Pi/2, Pi/2]
     # Joint 1: [-Pi, Pi]
-    joints_angle = spaces.Box(low=np.array([-np.pi / 2, -np.pi]), high=np.array([np.pi / 2, np.pi]), dtype=np.float32)
-    joints_vel = spaces.Box(low=np.array([-50, -50]), high=np.array([50, 50]), dtype=np.float32)
+    self.observation_space = spaces.Box(low=np.array([
+                                          -self.params.TABLE_SIZE[0] / 2., -self.params.TABLE_SIZE[1] / 2., # ball pose
+                                          -np.pi / 2, -np.pi,                                               # joint angles
+                                          -50, -50]),                                                       # joint vels
+                                        high=np.array([
+                                          self.params.TABLE_SIZE[0] / 2., self.params.TABLE_SIZE[1] / 2.,   # ball pose
+                                          np.pi / 2, np.pi,                                                 # joint angles
+                                          50, 50]), dtype=np.float32)                                       # joint vels
 
-    self.observation_space = spaces.Tuple([ball_os, joints_angle, joints_vel])
 
     ## Joint commands can be between [-1, 1]
     self.action_space = spaces.Box(low=np.array([-1., -1.]), high=np.array([1., 1.]), dtype=np.float32)
@@ -105,8 +107,7 @@ class BilliardEnv(gym.Env):
     if np.abs(ball_pose[0]) > 1.5 or np.abs(ball_pose[1]) > 1.5:
       raise ValueError('Ball out of map in position: {}'.format(ball_pose))
 
-    self.state = (
-    np.array([ball_pose[0], ball_pose[1]]), np.array([joint0_a, joint1_a]), np.array([joint0_v, joint1_v]))
+    self.state = np.array([ball_pose[0], ball_pose[1], joint0_a, joint1_a, joint0_v, joint1_v])
     return self.state
 
   def step(self, action):
@@ -130,7 +131,7 @@ class BilliardEnv(gym.Env):
     final = False
     ## Check if final state
     ## Calculates if distance between the ball's center and the holes' center is smaller than the holes' radius
-    ball_pose = self.state[0]
+    ball_pose = self.state[0:2]
     for hole in self.physics_eng.holes:
       dist = np.linalg.norm(ball_pose - hole['pose'])
       if dist <= hole['radius']:
@@ -145,18 +146,12 @@ class BilliardEnv(gym.Env):
 
     return self.state, reward, final, info
 
-<<<<<<< HEAD
-  def render(self, mode='human', **kwargs):
-=======
-  def render(self, mode='human'):
+  def render(self, mode='rgb_array', **kwargs):
     """
     Rendering function
     :param mode: if human, renders on screen. If rgb_array, renders as numpy array
     :return: screen if mode=human, array if mode=rgb_array
     """
->>>>>>> b9b0bb08e5621adf1fe1c0e940e5f2d328126982
-    import pygame
-
     # If no screen available create screen
     if self.screen is None and mode == 'human':
       self.screen = pygame.display.set_mode((self.params.DISPLAY_SIZE[0], self.params.DISPLAY_SIZE[1]), 0, 32)

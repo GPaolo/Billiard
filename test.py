@@ -1,6 +1,6 @@
 import gym
 import gym_billiard
-env = gym.make('BilliardHard-v0')
+env = gym.make('Billiard-v0')
 import numpy as np
 import matplotlib.pyplot as plt
 from math import cos
@@ -13,7 +13,7 @@ lim = 20
 total_act = np.array([0., 0.])
 for i in range(10):
   obs = env.reset()
-  a = env.render(rendered=False)
+  a = env.render(mode='rgb_array')
 
   for t in range(10000):
     if t < lim:
@@ -22,8 +22,8 @@ for i in range(10):
 
     else:
       action = [0., 0.]
-    img = env.render(rendered=False)
-    env.render(rendered=True)
+    img = env.render()
+    env.render(mode='human')
     from matplotlib import pyplot as plt
 
     plt.imshow(img, interpolation='nearest')
