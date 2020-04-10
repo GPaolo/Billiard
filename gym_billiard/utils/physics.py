@@ -1,4 +1,6 @@
 import Box2D as b2
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 import numpy as np
 from gym_billiard.utils import parameters
