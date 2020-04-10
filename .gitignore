@@ -2,3 +2,4 @@
 .venv
 Pipfile
 nohup.out
+**__pycache__**
