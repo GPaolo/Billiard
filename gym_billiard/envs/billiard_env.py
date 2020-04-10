@@ -6,6 +6,8 @@ from gym import error, spaces, utils
 from gym.utils import seeding
 import numpy as np
 from gym_billiard.utils import physics, parameters
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 
 # TODO implement logger
