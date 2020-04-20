@@ -44,4 +44,4 @@ class Params(object):
     self.RANDOM_ARM_INIT_POSE = False
     self.RANDOM_BALL_INIT_POSE = False
 
-    self.SHOW_ARM_IN_ARRAY = False
+    self.SHOW_ARM_IN_ARRAY = True
