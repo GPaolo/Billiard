@@ -60,6 +60,10 @@ class BilliardEnv(gym.Env):
     ## Joint commands can be between [-1, 1]
     self.action_space = spaces.Box(low=np.array([-1., -1.]), high=np.array([1., 1.]), dtype=np.float32)
 
+    self.goals = np.array([hole['pose'] for hole in self.physics_eng.holes])
+    self.goalRadius = [hole['radius'] for hole in self.physics_eng.holes]
+    self.rew_area = None
+
     self.seed(seed)
 
   def seed(self, seed=None):
@@ -94,6 +98,7 @@ class BilliardEnv(gym.Env):
 
     self.physics_eng.reset([init_ball_pose], init_joint_pose)
     self.steps = 0
+    self.rew_area = None
     return self._get_obs()
 
   def _get_obs(self):
@@ -112,6 +117,22 @@ class BilliardEnv(gym.Env):
     self.state = np.array([ball_pose[0], ball_pose[1], joint0_a, joint1_a, joint0_v, joint1_v])
     return self.state
 
+  def reward_function(self, info):
+    """
+    This function calculates the reward
+    :return:
+    """
+    ball_pose = self.state[0:2]
+    for hole_idx, hole in enumerate(self.physics_eng.holes):
+      dist = np.linalg.norm(ball_pose - hole['pose'])
+      if dist <= hole['radius']:
+        done = True
+        reward = 100
+        info['reason'] = 'Ball in hole'
+        info['rew_area'] = hole_idx
+        return reward, done, info
+    return 0, False, None
+
   def step(self, action):
     """
     Performs an environment step.
@@ -120,6 +141,7 @@ class BilliardEnv(gym.Env):
     """
     # action = np.clip(action, -1, 1)
 
+    self.steps += 1
     ## Pass motor command
     self.physics_eng.move_joint('jointW0', action[0])
     self.physics_eng.move_joint('joint01', action[1])
@@ -127,26 +149,16 @@ class BilliardEnv(gym.Env):
     self.physics_eng.step()
     ## Get state
     self._get_obs()
-    reward = 0
     info = {}
 
-    final = False
-    ## Check if final state
-    ## Calculates if distance between the ball's center and the holes' center is smaller than the holes' radius
-    ball_pose = self.state[0:2]
-    for hole in self.physics_eng.holes:
-      dist = np.linalg.norm(ball_pose - hole['pose'])
-      if dist <= hole['radius']:
-        final = True
-        reward = 100
-        info['reason'] = 'Ball in hole'
+    # Get reward
+    reward, done, info = self.reward_function(info)
 
-    self.steps += 1
     if self.steps >= self.params.MAX_ENV_STEPS:  ## Check if max number of steps has been exceeded
-      final = True
+      done = True
       info['reason'] = 'Max Steps reached: {}'.format(self.steps)
 
-    return self.state, reward, final, info
+    return self.state, reward, done, info
 
   def render(self, mode='rgb_array', **kwargs):
     """
@@ -169,22 +181,22 @@ class BilliardEnv(gym.Env):
       capture.set_alpha(None)
 
     ## Draw holes. This are just drawn, but are not simulated.
-    for hole in self.physics_eng.holes:
+    for goal, radius in zip(self.goals, self.goalRadius):
       ## To world transform (The - is to take into account pygame coordinate system)
-      pose = -hole['pose'] + self.physics_eng.tw_transform
+      pose = -goal + self.physics_eng.tw_transform
 
       if mode == 'human':
         ## Draw the holes on the screen
         pygame.draw.circle(self.screen,
                            (255, 0, 0),
                            [int(pose[0] * self.params.PPM), int(pose[1] * self.params.PPM)],
-                           int(hole['radius'] * self.params.PPM))
+                           int(radius * self.params.PPM))
       elif mode == 'rgb_array':
         ## Draw the holes on the capture
         pygame.draw.circle(capture,
                            (255, 0, 0),
                            [int(pose[0] * self.params.PPM), int(pose[1] * self.params.PPM)],
-                           int(hole['radius'] * self.params.PPM))
+                           int(radius * self.params.PPM))
 
     ## Draw bodies
     for body in self.physics_eng.world.bodies:
